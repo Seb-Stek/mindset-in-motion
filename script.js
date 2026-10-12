@@ -32,17 +32,18 @@ const CONFIG = {
       cover: "photos/huddle.jpg",   // photo shown on the event card
       partner: "Boys & Girls Club of Union County",
       status: "done",
-      summary: "Our very first event. An hour of soccer games and races with the kids at the Boys & Girls Club of Union County.",
-      highlights: ["Soccer games and small-sided scrimmages", "Sprint and relay races", "About an hour of nonstop action"]
+      summary: "Our very first event. An hour of soccer games and races outside on the field with the kids at the Boys & Girls Club of Union County.",
+      highlights: ["Soccer games and small-sided scrimmages", "Sprint, relay and push-up races", "Picking teams with pinnies"]
     },
     {
       id: "event2",
       title: "Event #2: Back for More",
       date: "Aug 17, 2026",
+      cover: "photos/event2-demo.jpg",
       partner: "Boys & Girls Club of Union County",
       status: "done",
-      summary: "We came back to the Boys & Girls Club of Union County for round two, with more games, more races and more energy.",
-      highlights: ["Push-up races and fitness challenges", "Pinnie-team games", "Soccer lessons and drills"]
+      summary: "We came back to the Boys & Girls Club of Union County for round two, this time inside the clubhouse gym.",
+      highlights: ["Indoor soccer in the clubhouse gym", "Dribbling drills around cones", "Shooting on goal and small-sided scrimmages"]
     },
     {
       id: "next",
@@ -55,22 +56,44 @@ const CONFIG = {
     }
   ],
 
-  // Drop your images into the /photos folder and list them here.
-  // event: must match an event id above. layout: "", "wide" or "tall".
+  // Drop your images and videos into the /photos folder and list them here.
+  // event: must match an event id above. sport: must match a sport key below.
+  // layout: "", "wide" or "tall".
+  // Videos: add video: "photos/name.mp4" and use src for a still frame (the thumbnail).
   photos: [
-    { src: "photos/team-photo.jpg",  caption: "The whole crew",                       event: "event1", layout: "wide" },
-    { src: "photos/ball-skills.jpg", caption: "Working on first touches",             event: "event1", layout: "tall" },
-    { src: "photos/pushup-race.jpg", caption: "Push-up race",                         event: "event2", layout: "tall" },
-    { src: "photos/huddle.jpg",      caption: "Huddle up: hands up if you're ready",  event: "event1", layout: "wide" },
-    { src: "photos/pinnies.jpg",     caption: "Picking teams",                        event: "event2", layout: "tall" }
+    // Event #1 (outside on the field)
+    { src: "photos/team-photo.jpg",  caption: "The whole crew",                       event: "event1", sport: "soccer", layout: "wide" },
+    { src: "photos/ball-skills.jpg", caption: "Working on first touches",             event: "event1", sport: "soccer", layout: "tall" },
+    { src: "photos/pushup-race.jpg", caption: "Push-up race",                         event: "event1", sport: "soccer", layout: "tall" },
+    { src: "photos/huddle.jpg",      caption: "Huddle up: hands up if you're ready",  event: "event1", sport: "soccer", layout: "wide" },
+    { src: "photos/pinnies.jpg",     caption: "Picking teams",                        event: "event1", sport: "soccer", layout: "tall" },
+
+    // Event #2 (inside the clubhouse gym)
+    { src: "photos/event2-scrimmage.jpg", caption: "Scrimmage in the gym",              event: "event2", sport: "soccer", layout: "tall" },
+    { src: "photos/event2-in-goal.jpg",   video: "photos/event2-in-goal.mp4",   caption: "Shooting on goal",       event: "event2", sport: "soccer", layout: "tall" },
+    { src: "photos/event2-demo.jpg",      caption: "Showing the drill",                 event: "event2", sport: "soccer", layout: "wide" },
+    { src: "photos/event2-rules.jpg",     caption: "Going over the game",               event: "event2", sport: "soccer", layout: "tall" },
+    { src: "photos/event2-gym-games.jpg", video: "photos/event2-gym-games.mp4", caption: "Games all over the gym", event: "event2", sport: "soccer", layout: "tall" },
+    { src: "photos/event2-arrival.jpg",   caption: "Gear in hand at the clubhouse",     event: "event2", sport: "soccer", layout: "tall" },
+    { src: "photos/event2-drill.jpg",     video: "photos/event2-drill.mp4",     caption: "Racing to goal",         event: "event2", sport: "soccer", layout: "tall" },
+    { src: "photos/event2-huddle.jpg",    caption: "Questions before kickoff",          event: "event2", sport: "soccer", layout: "tall" },
+    { src: "photos/event2-team-talk.jpg", video: "photos/event2-team-talk.mp4", caption: "Team talk",              event: "event2", sport: "soccer", layout: "tall" },
+    { src: "photos/event2-ball-cam.jpg",  video: "photos/event2-ball-cam.mp4",  caption: "Ball's-eye view",        event: "event2", sport: "soccer", layout: "" },
+    { src: "photos/event2-gym-tour.jpg",  video: "photos/event2-gym-tour.mp4",  caption: "Setting up the gym",     event: "event2", sport: "soccer", layout: "" }
   ],
 
+  // Tap a sport on the site to see its photos and how to sign up.
+  // status: "now" (we run events for it) or "soon" (people can join an interest list).
+  // Optional: signup: ["step 1", "step 2", ...] to replace the default steps.
   sports: [
-    { key: "soccer",     name: "Soccer",     current: true },
-    { key: "basketball", name: "Basketball" },
-    { key: "tennis",     name: "Tennis" },
-    { key: "volleyball", name: "Volleyball" },
-    { key: "other",      name: "Something else" }
+    { key: "soccer",     name: "Soccer",     status: "now",
+      about: "Games, lessons and races. Every kid gets touches on the ball, whether it's their first time or they've played for years." },
+    { key: "basketball", name: "Basketball", status: "soon",
+      about: "We haven't run a basketball event yet, but it's high on our list." },
+    { key: "tennis",     name: "Tennis",     status: "soon",
+      about: "We haven't run a tennis event yet, but we'd love to bring it to more kids." },
+    { key: "volleyball", name: "Volleyball", status: "soon",
+      about: "We haven't run a volleyball event yet, but it's on the way." }
   ]
 };
 
@@ -78,12 +101,15 @@ const CONFIG = {
 
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
-const store = {
-  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
-};
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const shortTitle = ev => ev.title.split(":")[0];
+const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+// "5 photos and 6 videos"
+const mediaCount = list => {
+  const v = list.filter(p => p.video).length, ph = list.length - v;
+  return [ph && plural(ph, "photo"), v && plural(v, "video")].filter(Boolean).join(" and ");
+};
+const PLAY = `<span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span>`;
 
 /* ---------- Motion helpers ----------
    Visitors who turn on "reduce motion" in their system settings still get
@@ -297,7 +323,7 @@ CONFIG.events.forEach(ev => {
       <p class="ev-partner">${esc(ev.partner)}</p>
       <p class="ev-summary">${esc(ev.summary)}</p>
       ${ev.highlights?.length ? `<ul class="ev-highlights">${ev.highlights.map(h => `<li>${esc(h)}</li>`).join("")}</ul>` : ""}
-      ${pics.length ? `<button class="ev-link" data-filter="${ev.id}">See ${pics.length} photo${pics.length > 1 ? "s" : ""} <span class="arr" aria-hidden="true">→</span></button>`
+      ${pics.length ? `<button class="ev-link" data-filter="${ev.id}">See ${mediaCount(pics)} <span class="arr" aria-hidden="true">→</span></button>`
                     : upcoming ? `<a class="ev-link" href="#involved" data-way="Partner">Host an event with us <span class="arr" aria-hidden="true">→</span></a>` : ""}
     </div>`;
   timeline.appendChild(card);
@@ -336,13 +362,39 @@ CONFIG.photos.forEach((p, i) => {
   fig.className = `g-item ${p.layout || ""}`;
   fig.dataset.event = p.event;
   fig.dataset.index = i;
-  fig.setAttribute("aria-label", `Open photo: ${p.caption}`);
+  fig.setAttribute("aria-label", `${p.video ? "Play video" : "Open photo"}: ${p.caption}`);
   fig.appendChild(photo(p.src, p.caption));
+  if (p.video) { fig.classList.add("is-video"); fig.insertAdjacentHTML("beforeend", PLAY); hoverPreview(fig, p.video); }
   const cap = document.createElement("figcaption");
   cap.textContent = p.caption;
   fig.appendChild(cap);
   grid.appendChild(fig);
 });
+
+// Videos play silently while you hover over them (desktop only)
+function hoverPreview(el, src) {
+  if (reduced || !canHover) return;
+  let v = null;
+  el.addEventListener("pointerenter", () => {
+    v = document.createElement("video");
+    Object.assign(v, { src, muted: true, loop: true, playsInline: true });
+    v.className = "preview";
+    v.addEventListener("playing", () => v?.classList.add("on"), { once: true });
+    el.appendChild(v);
+    v.play().catch(() => {});
+  });
+  el.addEventListener("pointerleave", () => { v?.remove(); v = null; });
+}
+
+// In the two-column layout an odd number of tall photos leaves a hole,
+// so the last one stretches across both columns.
+function fillGaps() {
+  const shown = $$(".g-item:not(.hide)", grid);
+  shown.forEach(g => g.classList.remove("fill"));
+  if (getComputedStyle(grid).gridTemplateColumns.split(" ").length !== 2) return;
+  const talls = shown.filter(g => g.classList.contains("tall"));
+  if (talls.length % 2) talls.at(-1).classList.add("fill");
+}
 
 // Photos glide to their new spots when you change the filter (the "FLIP" technique).
 function setFilter(id) {
@@ -355,8 +407,7 @@ function setFilter(id) {
   const before = new Map(items.map(g => [g, g.getBoundingClientRect()]));
   const wasHidden = new Set(items.filter(g => g.classList.contains("hide")));
   items.forEach(g => g.classList.toggle("hide", id !== "all" && g.dataset.event !== id));
-  grid.classList.toggle("filtered", id !== "all");
-  grid.style.setProperty("--n", items.filter(g => !g.classList.contains("hide")).reduce((n, g) => n + (g.classList.contains("wide") ? 2 : 1), 0));
+  fillGaps();
   let n = 0;
   items.forEach(g => {
     if (g.classList.contains("hide")) return;
@@ -378,23 +429,30 @@ function setFilter(id) {
 /* ---------- Lightbox: zooms out of the photo you tapped ---------- */
 const lb = $("#lightbox");
 const lbMedia = $("#lbMedia");
-let lbIndex = 0, lbOpen = false, lastFocus = null;
+let lbIndex = 0, lbOpen = false, lastFocus = null, lbList = [];
 const visiblePhotos = () => $$(".g-item:not(.hide)", grid).map(g => +g.dataset.index);
 function showPhoto(i, dir = 0) {
   lbIndex = i;
   const p = CONFIG.photos[i];
-  const img = photo(p.src, p.caption, false);
+  stopVideo();
+  let img;
+  if (p.video) {
+    img = document.createElement("video");
+    Object.assign(img, { src: p.video, poster: p.src, controls: true, autoplay: true, playsInline: true });
+    img.setAttribute("aria-label", p.caption);
+  } else img = photo(p.src, p.caption, false);
   lbMedia.replaceChildren(img);
   const ev = CONFIG.events.find(e => e.id === p.event);
   $("#lbCaption").textContent = p.caption + (ev ? `, ${shortTitle(ev)}` : "");
-  const list = visiblePhotos();
+  const list = lbList;
   $("#lbCount").textContent = `${list.indexOf(i) + 1} / ${list.length}`;
   // Warm up the neighbours so arrowing through feels instant
   [-1, 1].forEach(d => { const j = list[(list.indexOf(i) + d + list.length) % list.length]; if (CONFIG.photos[j]?.src) new Image().src = CONFIG.photos[j].src; });
   if (dir) animate(img, [{ opacity: 0, transform: reduced ? "none" : `translateX(${dir * 70}px) scale(.96)` }, { opacity: 1, transform: "none" }], { duration: 480, easing: EASE });
   return img;
 }
-function openLB(i, fromEl) {
+function openLB(i, fromEl, list = visiblePhotos()) {
+  lbList = list;
   lastFocus = document.activeElement;
   lbOpen = true;
   const sbw = innerWidth - document.documentElement.clientWidth;
@@ -405,8 +463,8 @@ function openLB(i, fromEl) {
   lb.classList.add("open");
   const img = showPhoto(i);
   $(".lb-close").focus({ preventScroll: true });
-  if (img.tagName !== "IMG") return;
-  if (!fromEl || reduced) { img.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 350 }); return; }
+  if (img.tagName === "DIV") return;
+  if (!fromEl || reduced || img.tagName === "VIDEO") { img.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 350 }); return; }
   const from = (fromEl.querySelector("img") || fromEl).getBoundingClientRect();
   const zoom = () => {
     const to = img.getBoundingClientRect();
@@ -419,11 +477,13 @@ function openLB(i, fromEl) {
   };
   img.complete ? zoom() : img.addEventListener("load", zoom, { once: true });
 }
+const stopVideo = () => $("video", lbMedia)?.pause();
 function closeLB() {
   if (!lbOpen) return;
   lbOpen = false;
+  stopVideo();
   lb.classList.remove("open");
-  const img = $("img", lbMedia);
+  const img = $("img, video", lbMedia);
   if (img && !reduced) animate(img, [{ transform: "none" }, { transform: "scale(.94)" }], { duration: 280, easing: "ease-in", fill: "forwards" });
   setTimeout(() => {
     lb.hidden = true;
@@ -433,7 +493,7 @@ function closeLB() {
   lastFocus?.focus({ preventScroll: true });
 }
 function stepLB(dir) {
-  const list = visiblePhotos();
+  const list = lbList;
   const pos = list.indexOf(lbIndex);
   showPhoto(list[(pos + dir + list.length) % list.length], dir);
 }
@@ -449,7 +509,7 @@ addEventListener("keydown", e => {
   if (e.key === "ArrowLeft") stepLB(-1);
   if (e.key === "ArrowRight") stepLB(1);
   if (e.key === "Tab") {                       // keep focus inside the viewer
-    const btns = $$("button", lb);
+    const btns = $$("button, video", lb);
     const i = btns.indexOf(document.activeElement);
     e.preventDefault();
     btns[(i + (e.shiftKey ? -1 : 1) + btns.length) % btns.length].focus();
@@ -464,9 +524,7 @@ lb.addEventListener("touchend", e => {
   touchX = null;
 });
 
-/* ---------- Sports vote ----------
-   Votes are saved in this visitor's browser only. To collect real votes
-   from everyone, connect a form service or a small backend later. */
+/* ---------- Sports: tap one to see its photos and how to sign up ---------- */
 const ICONS = {
   soccer: `<circle cx="24" cy="24" r="20"/><path d="M24 15l7 5-3 8h-8l-3-8z"/><path d="M24 4v11M31 20l11-4M28 28l6 10M20 28l-6 10M17 20L6 16"/>`,
   basketball: `<circle cx="24" cy="24" r="20"/><path d="M4 24h40M24 4v40"/><path d="M10 9c6 5 6 25 0 30M38 9c-6 5-6 25 0 30"/>`,
@@ -477,54 +535,94 @@ const ICONS = {
 const icon = k => `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k] || ICONS.other}</svg>`;
 
 const sportsGrid = $("#sportsGrid");
-let votes = store.get("mim-votes", {});
-let myVote = store.get("mim-myvote", null);
+const sportPanel = $("#sportPanel");
+const sportPhotos = key => CONFIG.photos.map((p, i) => ({ ...p, i })).filter(p => p.sport === key);
+const signupSteps = s => s.signup || (s.status === "now"
+  ? [`Send us a sign-up message with the player's name and age.`,
+     `We'll reply with the date and place of our next ${s.name.toLowerCase()} event.`,
+     `Show up and play. It's always free.`]
+  : [`Send us a message to join the ${s.name.toLowerCase()} interest list.`,
+     `We'll email you as soon as our first ${s.name.toLowerCase()} event is scheduled.`,
+     `Show up and play. It's always free.`]);
 
-function renderSports(justVoted = null) {
-  const total = Object.values(votes).reduce((a, b) => a + b, 0);
-  const pctOf = k => total ? Math.round((votes[k] || 0) / total * 100) : 0;
-  sportsGrid.innerHTML = CONFIG.sports.map(s => {
-    if (s.current) return `<div class="sport current">${icon(s.key)}<h3>${esc(s.name)}</h3><span class="tag">Playing now</span></div>`;
-    const pct = pctOf(s.key);
-    return `<button class="sport ${myVote === s.key ? "voted" : ""}" data-k="${s.key}" ${myVote ? "disabled" : ""}>
-      ${icon(s.key)}<h3>${esc(s.name)}</h3>
-      <span class="tag">${myVote === s.key ? "Your pick" : "Coming soon"}</span>
-      <span class="pct">${myVote && !justVoted ? pct + "%" : ""}</span>
-      <span class="bar" style="width:${myVote && !justVoted ? pct : 0}%"></span>
-    </button>`;
-  }).join("");
-  $("#voteNote").innerHTML = myVote
-    ? `Thanks for voting. <button id="revote">Change my vote</button>`
-    : "Tap a sport to vote.";
-  if (!justVoted) return;
-  // Bars grow and percentages count up after a vote
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    $$("button.sport", sportsGrid).forEach(b => {
-      const pct = pctOf(b.dataset.k);
-      $(".bar", b).style.width = `${pct}%`;
-      countTo($(".pct", b), pct, 900, "%");
-    });
-  }));
-  const card = $(`[data-k="${justVoted}"]`, sportsGrid);
-  card.classList.add("just-voted");
-  confetti(...centerOf(card), 22, .8);
+sportsGrid.innerHTML = CONFIG.sports.map(s => `
+  <button class="sport ${s.status === "now" ? "current" : ""}" role="tab" aria-selected="false" aria-controls="sportPanel" data-k="${s.key}">
+    ${icon(s.key)}<h3>${esc(s.name)}</h3>
+    <span class="tag">${s.status === "now" ? "Playing now" : "Coming soon"}</span>
+  </button>`).join("");
+
+// Up to 5 thumbnails, taking turns between events so every event shows up
+function featured(pics) {
+  const byEvent = Object.values(pics.reduce((m, p) => ((m[p.event] ||= []).push(p), m), {}));
+  const out = [];
+  for (let r = 0; out.length < Math.min(5, pics.length); r++) byEvent.forEach(list => { if (list[r] && out.length < 5) out.push(list[r]); });
+  return out;
 }
-sportsGrid.addEventListener("click", e => {
-  const b = e.target.closest("button.sport");
-  if (!b || myVote) return;
-  myVote = b.dataset.k;
-  votes[myVote] = (votes[myVote] || 0) + 1;
-  store.set("mim-votes", votes); store.set("mim-myvote", myVote);
-  renderSports(myVote);
+function renderSportPanel(s) {
+  const pics = sportPhotos(s.key);
+  const name = esc(s.name), lower = esc(s.name.toLowerCase());
+  return `
+    <div class="sp-photos">
+      <h3>${name} photos</h3>
+      ${pics.length ? `<div class="sp-grid">${featured(pics).map((p, n) =>
+          `<button class="sp-thumb ${n === 0 ? "big" : ""}" data-index="${p.i}" aria-label="${p.video ? "Play video" : "Open photo"}: ${esc(p.caption)}">${p.video ? PLAY : ""}</button>`).join("")}</div>
+        ${pics.length > 5 ? `<button class="ev-link sp-all">See all ${mediaCount(pics)} <span class="arr" aria-hidden="true">→</span></button>` : ""}`
+      : `<div class="sp-empty">${icon(s.key)}<p>No ${lower} photos yet. They'll show up here after our first ${lower} event.</p></div>`}
+    </div>
+    <div class="sp-signup">
+      <span class="sp-status ${s.status === "now" ? "now" : ""}">${s.status === "now" ? "Playing now" : "Coming soon"}</span>
+      <h3>How to sign up for ${lower}</h3>
+      <p>${esc(s.about || "")}</p>
+      <ol class="sp-steps">${signupSteps(s).map(t => `<li>${esc(t)}</li>`).join("")}</ol>
+      <button class="btn btn-clay" data-signup="${s.key}">${s.status === "now" ? `Sign up for ${lower}` : `Join the ${lower} list`} <span class="arr" aria-hidden="true">→</span></button>
+    </div>`;
+}
+
+let currentSport = null;
+function chooseSport(key) {
+  const s = CONFIG.sports.find(x => x.key === key);
+  if (!s || key === currentSport) return;
+  const first = currentSport === null;
+  currentSport = key;
+  $$(".sport", sportsGrid).forEach(b => {
+    b.classList.toggle("active", b.dataset.k === key);
+    b.setAttribute("aria-selected", b.dataset.k === key);
+  });
+  const start = sportPanel.offsetHeight;
+  sportPanel.innerHTML = `<div class="sp-inner">${renderSportPanel(s)}</div>`;
+  // Fill the thumbnails with real images (or placeholders if a file is missing)
+  $$(".sp-thumb", sportPanel).forEach(t => {
+    const p = CONFIG.photos[+t.dataset.index];
+    t.prepend(photo(p.src, p.caption));
+  });
+  if (first) return;
+  // Grow or shrink smoothly to fit the new sport
+  const end = sportPanel.offsetHeight;
+  if (start !== end && !reduced) sportPanel.animate({ height: [`${start}px`, `${end}px`] }, { duration: 450, easing: EASE });
+}
+sportsGrid.addEventListener("click", e => { const b = e.target.closest(".sport"); if (b) chooseSport(b.dataset.k); });
+sportsGrid.addEventListener("keydown", e => {               // arrow keys move between sports
+  if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
+  const btns = $$(".sport", sportsGrid);
+  const i = btns.indexOf(document.activeElement);
+  const next = btns[(i + (e.key === "ArrowRight" ? 1 : -1) + btns.length) % btns.length];
+  next.focus();
+  chooseSport(next.dataset.k);
 });
-$("#voteNote").addEventListener("click", e => {
-  if (e.target.id !== "revote") return;
-  votes[myVote] = Math.max(0, (votes[myVote] || 1) - 1);
-  myVote = null;
-  store.set("mim-votes", votes); store.set("mim-myvote", null);
-  renderSports();
+sportPanel.addEventListener("click", e => {
+  const t = e.target.closest(".sp-thumb");
+  if (t) openLB(+t.dataset.index, t, featured(sportPhotos(currentSport)).map(p => p.i));
+  if (e.target.closest(".sp-all")) {
+    setFilter("all");
+    $("#gallery").scrollIntoView({ behavior: smooth });
+  }
+  const su = e.target.closest("[data-signup]");
+  if (su) {
+    chooseWay($('.way[data-type="Sign up"]'));
+    $("#sportField").value = su.dataset.signup;
+  }
 });
-renderSports();
+chooseSport((CONFIG.sports.find(s => s.status === "now") || CONFIG.sports[0]).key);
 
 /* ---------- Team jersey cards: tilt toward the cursor, flip on tap ---------- */
 const flipIcon = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/></svg>`;
@@ -565,132 +663,13 @@ $$(".member").forEach(m => {
   });
 });
 
-/* ---------- Penalty shootout ---------- */
-const pitchEl = $("#pitch"), goalEl = $("#goal"), keeper = $("#keeper"), ballEl = $("#shotBall"),
-      ballSkin = $("i", ballEl), shadowEl = $("#ballShadow"), msg = $("#gameMsg"), aim = $("#aim"),
-      dots = $$("#shotDots li"), goalsEl = $("#goals"), shotsEl = $("#shots"), bestEl = $("#best");
-let goals = 0, shots = 5, busy = false, best = store.get("mim-best", 0);
-let flight = [];
-bestEl.textContent = best;
-keeper.classList.add("ready");
-
-function say(text, big = false) { msg.textContent = text; msg.classList.toggle("big", big); restart(msg, "pop"); }
-function markNext() { dots.forEach((d, i) => d.classList.toggle("next", i === 5 - shots && shots > 0)); }
-markNext();
-
-function resetShot() {
-  flight.forEach(a => a.cancel());
-  flight = [];
-  animate(ballEl, [{ opacity: 0, transform: "scale(.4)" }, { opacity: 1, transform: "none" }], { duration: 450, easing: SPRING });
-  keeper.style.left = "50%"; keeper.style.bottom = "0"; keeper.style.transform = "translateX(-50%)";
-  setTimeout(() => keeper.classList.add("ready"), 400);
-}
-
-goalEl.addEventListener("pointermove", e => {
-  if (busy || shots === 0) { aim.classList.remove("on"); return; }
-  const g = goalEl.getBoundingClientRect();
-  aim.style.left = `${e.clientX - g.left - 7}px`;
-  aim.style.top = `${e.clientY - g.top - 7}px`;
-  aim.classList.add("on");
-});
-goalEl.addEventListener("pointerleave", () => aim.classList.remove("on"));
-
-goalEl.addEventListener("click", async e => {
-  if (busy || shots === 0) return;
-  busy = true;
-  aim.classList.remove("on");
-  keeper.classList.remove("ready");
-  const g = goalEl.getBoundingClientRect();
-  const b = ballEl.getBoundingClientRect();
-  const s = shadowEl.getBoundingClientRect();
-  const xPct = (e.clientX - g.left) / g.width;               // 0..1 across the goal
-  const yPct = 1 - (e.clientY - g.top) / g.height;           // 0 bottom .. 1 top
-  const tx = e.clientX - (b.left + b.width / 2);
-  const ty = e.clientY - (b.top + b.height / 2);
-  const arc = -Math.max(30, Math.abs(ty) * .3);
-
-  // Keeper dives to a random third; high shots in the corners can't be saved.
-  const dive = Math.floor(Math.random() * 3);                // 0 left, 1 middle, 2 right
-  const zone = xPct < .36 ? 0 : xPct > .64 ? 2 : 1;
-  const corner = (xPct < .12 || xPct > .88) && yPct > .6;
-  const saved = zone === dive && !corner;
-  setTimeout(() => {
-    keeper.style.left = ["24%", "50%", "76%"][dive];
-    keeper.style.bottom = dive === 1 ? "14%" : "5%";
-    keeper.style.transform = `translateX(-50%) rotate(${[-64, 0, 64][dive]}deg)`;
-  }, 90);
-
-  const dur = 520;
-  flight = [
-    animate(ballEl, [
-      { transform: "translate(0, 0) scale(1)" },
-      { transform: `translate(${tx * .5}px, ${ty * .5 + arc}px) scale(.8)`, offset: .5 },
-      { transform: `translate(${tx}px, ${ty}px) scale(.58)` }
-    ], { duration: dur, easing: "cubic-bezier(.3,.6,.4,1)", fill: "forwards" }),
-    animate(ballSkin, [{ transform: "rotate(0)" }, { transform: `rotate(${tx > 0 ? 900 : -900}deg)` }], { duration: dur + 300, easing: "ease-out", fill: "forwards" }),
-    animate(shadowEl, [
-      { transform: "none", opacity: 1 },
-      { transform: `translate(${tx}px, ${g.bottom - s.top - 6}px) scale(.45)`, opacity: .35 }
-    ], { duration: dur, easing: "cubic-bezier(.3,.6,.4,1)", fill: "forwards" })
-  ];
-  await wait(dur);                                          // timer, so a background tab can never stall the game
-
-  shots--;
-  dots[4 - shots].className = saved ? "miss" : "goal";
-  if (saved) {
-    // Parried away
-    const away = (dive === 0 ? -1 : dive === 2 ? 1 : (tx > 0 ? 1 : -1)) * (70 + Math.random() * 50);
-    flight.push(animate(ballEl, [
-      { transform: `translate(${tx}px, ${ty}px) scale(.58)` },
-      { transform: `translate(${tx + away}px, ${ty + 120}px) scale(.7)` }
-    ], { duration: 600, easing: "cubic-bezier(.2,.8,.3,1)", fill: "forwards" }));
-    restart(pitchEl, "shake");
-    say(["Saved", "Keeper read it", "Denied"][Math.floor(Math.random() * 3)]);
-  } else {
-    goals++;
-    flight.push(animate(ballEl, [
-      { transform: `translate(${tx}px, ${ty}px) scale(.58)` },
-      { transform: `translate(${tx}px, ${ty + 12}px) scale(.54)` }
-    ], { duration: 400, easing: "ease-out", fill: "forwards" }));
-    restart($(".net", goalEl), "ripple");
-    confetti(e.clientX, e.clientY, corner ? 40 : 24, corner ? 1.2 : .9);
-    say(corner ? "Top corner!" : "Goal!", corner);
-    goalsEl.textContent = goals;
-    restart(goalsEl, "bump");
-  }
-  shotsEl.textContent = shots;
-  restart(shotsEl, "bump");
-  markNext();
-
-  await wait(1150);
-  resetShot();
-  busy = false;
-  if (shots > 0) { say("Click the goal to shoot"); return; }
-  goalEl.classList.add("done");
-  if (goals > best) {
-    best = goals; store.set("mim-best", best);
-    bestEl.textContent = best; restart(bestEl, "bump");
-    say(`New best: ${goals} of 5`, true);
-    confetti(...centerOf(pitchEl), 50, 1.4);
-  } else {
-    say(goals >= 4 ? `${goals} of 5. Clinical.` : goals >= 2 ? `${goals} of 5. Not bad.` : `${goals} of 5. Run it back.`);
-  }
-});
-$("#resetGame").addEventListener("click", () => {
-  if (busy) return;
-  goals = 0; shots = 5;
-  goalsEl.textContent = 0; shotsEl.textContent = 5;
-  dots.forEach(d => d.className = "");
-  goalEl.classList.remove("done");
-  markNext();
-  say("Click the goal to shoot");
-});
-
 /* ---------- Get involved form ---------- */
 const form = $("#contactForm");
 const formDone = $("#formDone");
 const submitBtn = $('button[type="submit"]', form);
+$("#sportField").innerHTML = CONFIG.sports.map(s => `<option value="${s.key}">${esc(s.name)}${s.status === "now" ? "" : " (coming soon)"}</option>`).join("");
 const prompts = {
+  "Sign up": "The player's name and age, plus anything we should know…",
   "Volunteer": "Tell us a little about yourself and when you're free…",
   "Partner": "Tell us about your organization and the kids you work with…",
   "Donate gear": "What equipment would you like to donate?"
@@ -703,6 +682,9 @@ function chooseWay(t, scroll = true) {
   if ($("#formType").value !== type) restart(label, "swap");
   $("#formType").value = type;
   label.textContent = type;
+  const sportLabel = $("#sportLabel");
+  if (type === "Sign up" && sportLabel.hidden) restart(sportLabel, "appear");
+  sportLabel.hidden = type !== "Sign up";
   const org = $("#orgLabel");
   const showOrg = type === "Partner";
   if (showOrg && org.hidden) restart(org, "appear");
@@ -746,8 +728,10 @@ form.addEventListener("submit", async e => {
   submitBtn.classList.add("sending");
   submitBtn.firstChild.textContent = "Opening your email… ";
   await wait(450);
-  const subject = `Mindset in Motion: ${data.type} inquiry from ${data.name}`;
-  const body = `Name: ${data.name}\nEmail: ${data.email}\n${data.org ? `Organization: ${data.org}\n` : ""}\n${data.message}`;
+  const signup = data.type === "Sign up";
+  const sportName = CONFIG.sports.find(s => s.key === data.sport)?.name || "";
+  const subject = signup ? `Mindset in Motion: ${sportName} sign-up from ${data.name}` : `Mindset in Motion: ${data.type} inquiry from ${data.name}`;
+  const body = `Name: ${data.name}\nEmail: ${data.email}\n${signup ? `Sport: ${sportName}\n` : ""}${data.type === "Partner" && data.org ? `Organization: ${data.org}\n` : ""}\n${data.message}`;
   location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   submitBtn.classList.remove("sending");
   submitBtn.firstChild.textContent = "Send message ";
@@ -794,10 +778,10 @@ $$(".faq details").forEach(d => {
 $$("main h2").forEach(splitWords);
 reveal("main h2");
 reveal(".section .lead, .intro .narrow p:not(.lead)");
-reveal(".pillar, .steps li, .ev-card, .gallery-head .filters, .g-item, .partner-inner > *, .sport, .vote-note, .member, .way, .form, .faq details, .game-wrap > *, .footer-inner > *");
+reveal(".pillar, .steps li, .ev-card, .gallery-head .filters, .g-item, .partner-inner > *, .sport, .sport-panel, .member, .way, .form, .faq details, .footer-inner > *");
 reveal(".impact-stats > div", (el, d) => $$("[data-count]", el).forEach(n => roll(n, d)));
 
-const relayout = () => { moveIndicator(); movePill(); };
+const relayout = () => { moveIndicator(); movePill(); fillGaps(); };
 addEventListener("resize", relayout);
 document.fonts?.ready.then(relayout);
 relayout();

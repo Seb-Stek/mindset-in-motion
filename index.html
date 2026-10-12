@@ -35,6 +35,7 @@
       <a href="#mission">Who we are</a>
       <a href="#events">Events</a>
       <a href="#gallery">Photos</a>
+      <a href="#sports">Sports</a>
       <a href="#team">Team</a>
       <a href="#involved" class="btn btn-clay btn-sm">Get involved</a>
       <span class="nav-indicator" aria-hidden="true"></span>
@@ -154,42 +155,15 @@
     </div>
   </section>
 
-  <!-- SPORTS / VOTE -->
+  <!-- SPORTS: pick one to see its photos and how to sign up -->
   <section id="sports" class="section">
     <div class="wrap">
       <div class="center narrow">
-        <h2>What sport should we add next?</h2>
-        <p class="lead">Soccer is where we started. Tell us what to bring next.</p>
+        <h2>Our sports</h2>
+        <p class="lead">Soccer is where we started, and more sports are on the way. Tap a sport to see photos and how to sign up.</p>
       </div>
-      <div class="sports" id="sportsGrid"></div>
-      <p class="vote-note center" id="voteNote"></p>
-    </div>
-  </section>
-
-  <!-- MINI GAME -->
-  <section class="section section-green curve-top">
-    <div class="wrap game-wrap">
-      <div>
-        <h2>Take a penalty</h2>
-        <p class="lead">Five shots. Click where you want to aim and try to beat the keeper. Corners are your friend.</p>
-        <ol class="shot-dots" id="shotDots" aria-label="Shot results"><li></li><li></li><li></li><li></li><li></li></ol>
-        <div class="score">
-          <div><span id="goals">0</span><small>Goals</small></div>
-          <div><span id="shots">5</span><small>Shots left</small></div>
-          <div><span id="best">0</span><small>Best</small></div>
-        </div>
-        <button class="btn btn-sun" id="resetGame">New round</button>
-      </div>
-      <div class="pitch" id="pitch" aria-label="Penalty game: click inside the goal to shoot">
-        <div class="goal" id="goal">
-          <div class="net"></div>
-          <div class="keeper" id="keeper"></div>
-          <div class="aim" id="aim" aria-hidden="true"></div>
-        </div>
-        <div class="ball-shadow" id="ballShadow"></div>
-        <div class="shot-ball" id="shotBall"><i></i></div>
-        <div class="game-msg" id="gameMsg">Click the goal to shoot</div>
-      </div>
+      <div class="sports" id="sportsGrid" role="tablist" aria-label="Sports"></div>
+      <div class="sport-panel" id="sportPanel" role="tabpanel" aria-live="polite"></div>
     </div>
   </section>
 
@@ -212,6 +186,10 @@
         <p class="lead">There's a place for you on the team.</p>
       </div>
       <div class="ways">
+        <button class="way" data-type="Sign up">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="10" y="7" width="28" height="35" rx="3"/><path d="M18 7v-2h12v2M17 20h14M17 27h14M17 34h8"/></svg>
+          <h3>Sign up to play</h3><p>Get your kid a spot at our next free event.</p>
+        </button>
         <button class="way active" data-type="Volunteer">
           <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="15" r="7"/><path d="M10 42c0-8 6-14 14-14s14 6 14 14"/></svg>
           <h3>Volunteer</h3><p>Help coach drills and run races at our next event.</p>
@@ -232,6 +210,7 @@
           <label>Name<input name="name" required autocomplete="name"></label>
           <label>Email<input name="email" type="email" required autocomplete="email"></label>
         </div>
+        <label id="sportLabel" hidden>Sport<select name="sport" id="sportField"></select></label>
         <label id="orgLabel" hidden>Organization<input name="org"></label>
         <label>Message<textarea name="message" rows="4" placeholder="Tell us a little about yourself and when you're free…" id="msgField"></textarea></label>
         <button class="btn btn-clay" type="submit">Send message <span class="arr" aria-hidden="true">→</span></button>
@@ -286,6 +265,7 @@
       <a href="#mission">Who we are</a>
       <a href="#events">Events</a>
       <a href="#gallery">Photos</a>
+      <a href="#sports">Sports</a>
       <a href="#team">Team</a>
       <a href="#involved">Get involved</a>
     </nav>
