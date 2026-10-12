@@ -4,6 +4,11 @@
   full-bleed photo hero, a clear Get involved button, an impact-number band,
   three photo "pillar" cards, news-style event cards, and curved dividers.
 
+  Type: one superfamily, Barlow, cut three ways. Condensed for big
+  scoreboard-style headlines, Semi Condensed for section headings, and the
+  regular width for reading. Its letterforms come from road signs and
+  license plates, which suits a sports group.
+
   Palette: a soccer field and a running track.
   - Pitch green: main brand color (bands, headings, crest).
   - Track clay: its complement, used only for action buttons.
@@ -31,6 +36,7 @@
   --shadow: 0 1px 2px rgba(0,0,0,.06), 0 12px 32px -16px rgba(20,56,39,.35);
   --shadow-lift: 0 2px 4px rgba(0,0,0,.06), 0 24px 44px -18px rgba(20,56,39,.45);
   --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --heading: "Barlow Semi Condensed", "Barlow", system-ui, sans-serif;
   --body: "Barlow", system-ui, sans-serif;
   --ease: cubic-bezier(.22, 1, .36, 1);
   --spring: cubic-bezier(.34, 1.56, .64, 1);
@@ -47,6 +53,7 @@ a { color: inherit; }
 .center { text-align: center; margin-inline: auto; }
 
 h1 { font-family: var(--display); font-weight: 800; text-transform: uppercase; line-height: .95; font-size: clamp(3.2rem, 8.5vw, 6.4rem); }
+h2, h3 { font-family: var(--heading); }
 h2 { font-weight: 700; font-size: clamp(2rem, 4.2vw, 2.9rem); line-height: 1.1; color: var(--green); margin-bottom: .8rem; letter-spacing: -.01em; }
 h3 { font-weight: 700; font-size: 1.3rem; line-height: 1.2; margin-bottom: .35rem; }
 .lead { font-size: 1.2rem; color: var(--muted); margin-bottom: 1rem; }
@@ -592,3 +599,6 @@ h3 { font-weight: 700; font-size: 1.3rem; line-height: 1.2; margin-bottom: .35re
   ::view-transition-new(root) { animation-name: fade-in; }
   .timeline li.in::before { animation: none; }
 }
+
+/* Clay is slightly too light for small text on sand, so links there use the deeper clay */
+.section-sand .see-all, .section-sand .ev-link, .section-sand .faq a, .section-sand .timeline a, .section-sand .tile-more { color: var(--clay-deep); }
