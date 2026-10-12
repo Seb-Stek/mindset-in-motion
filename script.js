@@ -29,23 +29,24 @@ const CONFIG = {
       id: "event1",
       title: "Event #1: Kickoff",
       date: "Aug 10, 2026",
-      partner: "Boys & Girls Club of Union",
+      cover: "photos/huddle.jpg",   // photo shown on the event card
+      partner: "Boys & Girls Club of Union County",
       status: "done",
-      summary: "Our very first event. An hour of soccer games and races with the kids at the Boys & Girls Club of Union.",
+      summary: "Our very first event. An hour of soccer games and races with the kids at the Boys & Girls Club of Union County.",
       highlights: ["Soccer games and small-sided scrimmages", "Sprint and relay races", "About an hour of nonstop action"]
     },
     {
       id: "event2",
       title: "Event #2: Back for More",
       date: "Aug 17, 2026",
-      partner: "Boys & Girls Club of Union",
+      partner: "Boys & Girls Club of Union County",
       status: "done",
-      summary: "We came back to the Boys & Girls Club of Union for round two, with more games, more races and more energy.",
+      summary: "We came back to the Boys & Girls Club of Union County for round two, with more games, more races and more energy.",
       highlights: ["Push-up races and fitness challenges", "Pinnie-team games", "Soccer lessons and drills"]
     },
     {
       id: "next",
-      title: "Event #3: Coming soon",
+      title: "Event #3: Your community?",
       date: "TBA",
       partner: "Want to host? Get in touch!",
       status: "upcoming",
@@ -89,16 +90,13 @@ $("#year").textContent = new Date().getFullYear();
 /* ---------- Nav ---------- */
 const nav = $(".nav");
 const toggle = $(".nav-toggle");
-addEventListener("scroll", () => nav.classList.toggle("scrolled", scrollY > 10), { passive: true });
 toggle.addEventListener("click", () => {
   const open = nav.classList.toggle("open");
   toggle.setAttribute("aria-expanded", open);
-  toggle.textContent = open ? "Close" : "Menu";
 });
 $$(".nav-links a").forEach(a => a.addEventListener("click", () => {
   nav.classList.remove("open");
   toggle.setAttribute("aria-expanded", false);
-  toggle.textContent = "Menu";
 }));
 
 /* ---------- Reveal on scroll + counters ---------- */
@@ -110,7 +108,7 @@ const io = new IntersectionObserver(entries => {
   });
 }, { threshold: .12 });
 function observeReveals() {
-  $$(".values li, .schedule li, .ev, .member, .mission-grid > *").forEach(el => el.classList.add("reveal"));
+  $$(".pillar, .steps li, .ev-card, .member, .way").forEach(el => el.classList.add("reveal"));
   $$(".reveal:not(.in)").forEach(el => io.observe(el));
 }
 
@@ -127,13 +125,13 @@ function countUp(el) {
 const statsIO = new IntersectionObserver(entries => {
   if (entries[0].isIntersecting) { $$("[data-count]").forEach(countUp); statsIO.disconnect(); }
 });
-statsIO.observe($(".scoreboard"));
+statsIO.observe($(".impact-stats"));
 
 /* ---------- Photos (with a placeholder until the real file exists) ---------- */
 function placeholder(src) {
   const d = document.createElement("div");
   d.className = "placeholder";
-  d.innerHTML = `<strong>Photo coming soon</strong><small>${esc(src || "")}</small>`;
+  d.textContent = "Photo coming soon";
   return d;
 }
 function photo(src, alt) {
@@ -144,55 +142,29 @@ function photo(src, alt) {
   return img;
 }
 
-/* Hero: the first three photos, pinned up like prints */
-const heroPhotos = $("#heroPhotos");
-CONFIG.photos.slice(0, 3).forEach(p => {
-  const fig = document.createElement("figure");
-  fig.className = "print";
-  fig.appendChild(photo(p.src, p.caption));
-  const cap = document.createElement("figcaption");
-  cap.textContent = p.caption;
-  fig.appendChild(cap);
-  heroPhotos.appendChild(fig);
-});
-
-/* ---------- Events ---------- */
+/* ---------- Events (news-style cards) ---------- */
 const timeline = $("#timeline");
-CONFIG.events.forEach((ev, i) => {
-  const count = CONFIG.photos.filter(p => p.event === ev.id).length;
+CONFIG.events.forEach(ev => {
+  const pics = CONFIG.photos.filter(p => p.event === ev.id);
+  const cover = ev.cover || pics[0]?.src;
   const upcoming = ev.status === "upcoming";
-  const item = document.createElement("article");
-  item.className = `ev ${upcoming ? "upcoming" : ""} ${i === 0 ? "open" : ""}`;
-  item.innerHTML = `
-    <button class="ev-head" aria-expanded="${i === 0}">
+  const card = document.createElement("article");
+  card.className = "ev-card";
+  card.innerHTML = `
+    <div class="ev-cover">${cover ? `<img src="${esc(cover)}" alt="${esc(ev.title)}" loading="lazy">` : `<div class="ev-cover-empty">Coming soon</div>`}</div>
+    <div class="ev-body">
       <span class="ev-date">${esc(ev.date)}</span>
-      <span>
-        <h3>${esc(ev.title)}</h3>
-        <span class="ev-partner">${esc(ev.partner)}</span>
-      </span>
-      <span style="display:flex;gap:1rem;align-items:center">
-        <span class="ev-status">${upcoming ? "Upcoming" : "Done"}</span>
-        <span class="ev-toggle">${i === 0 ? "–" : "+"}</span>
-      </span>
-    </button>
-    <div class="ev-body"><div><div class="ev-inner">
-      <p>${esc(ev.summary)}</p>
-      ${ev.highlights.length ? `<ul>${ev.highlights.map(h => `<li>${esc(h)}</li>`).join("")}</ul>` : ""}
-      ${count ? `<button class="ev-link" data-filter="${ev.id}">See the photos from this event</button>`
-              : upcoming ? `<a class="ev-link" href="#involved">Get in touch about hosting</a>` : ""}
-    </div></div></div>`;
-  timeline.appendChild(item);
+      <h3>${esc(ev.title)}</h3>
+      <p class="ev-partner">${esc(ev.partner)}</p>
+      <p class="ev-summary">${esc(ev.summary)}</p>
+      ${pics.length ? `<button class="ev-link" data-filter="${ev.id}">See ${pics.length} photo${pics.length > 1 ? "s" : ""} →</button>`
+                    : upcoming ? `<a class="ev-link" href="#involved">Host an event with us →</a>` : ""}
+    </div>`;
+  timeline.appendChild(card);
 });
 timeline.addEventListener("click", e => {
   const link = e.target.closest("[data-filter]");
-  if (link) { setFilter(link.dataset.filter); $("#gallery").scrollIntoView(); return; }
-  const head = e.target.closest(".ev-head");
-  if (head) {
-    const ev = head.parentElement;
-    const open = ev.classList.toggle("open");
-    head.setAttribute("aria-expanded", open);
-    $(".ev-toggle", head).textContent = open ? "–" : "+";
-  }
+  if (link) { setFilter(link.dataset.filter); $("#gallery").scrollIntoView(); }
 });
 
 /* ---------- Gallery + filters + lightbox ---------- */
@@ -281,7 +253,7 @@ function renderSports() {
     </button>`;
   }).join("");
   $("#voteNote").innerHTML = myVote
-    ? `Thanks for voting. <button class="ev-link" id="revote">Change my vote</button>`
+    ? `Thanks for voting. <button id="revote">Change my vote</button>`
     : "Tap a sport to vote.";
 }
 sportsGrid.addEventListener("click", e => {
@@ -379,11 +351,13 @@ const prompts = {
   "Partner": "Tell us about your organization and the kids you work with…",
   "Donate gear": "What equipment would you like to donate?"
 };
-$$(".tab").forEach(t => t.addEventListener("click", () => {
-  $$(".tab").forEach(x => { x.classList.toggle("active", x === t); x.setAttribute("aria-selected", x === t); });
+$$(".way").forEach(t => t.addEventListener("click", () => {
+  $$(".way").forEach(x => x.classList.toggle("active", x === t));
   $("#formType").value = t.dataset.type;
+  $("#formTypeLabel").textContent = t.dataset.type;
   $("#orgLabel").hidden = t.dataset.type !== "Partner";
   $("#msgField").placeholder = prompts[t.dataset.type];
+  $("#contactForm").scrollIntoView({ block: "center" });
 }));
 
 form.addEventListener("submit", e => {

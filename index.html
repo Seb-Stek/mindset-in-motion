@@ -7,162 +7,164 @@
   <meta name="description" content="Mindset in Motion is a youth-led nonprofit bringing free soccer games, lessons and races to kids in underserved communities.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400;1,8..60,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='14' fill='%231d4d36'/><text x='50' y='72' font-size='62' text-anchor='middle' font-family='Arial Narrow,Arial' font-weight='900' fill='%23f3ede2'>M</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%231d4d36'/><circle cx='50' cy='50' r='40' fill='none' stroke='%23e8a83a' stroke-width='4'/><text x='50' y='67' font-size='46' text-anchor='middle' font-family='Arial Narrow,Arial' font-weight='900' fill='%23f4eee3'>M</text></svg>">
 </head>
 <body>
 
 <header class="nav" id="top">
   <div class="wrap nav-inner">
     <a href="#top" class="logo" aria-label="Mindset in Motion home">
-      <span class="logo-mark" aria-hidden="true">M</span>
+      <svg class="crest" viewBox="0 0 100 100" aria-hidden="true">
+        <defs><path id="arcTop" d="M18 50a32 32 0 0 1 64 0"/><path id="arcBot" d="M14 50a36 36 0 0 0 72 0"/></defs>
+        <circle cx="50" cy="50" r="48" fill="#1d4d36"/>
+        <circle cx="50" cy="50" r="43" fill="none" stroke="#e8a83a" stroke-width="2"/>
+        <text font-size="10.5" font-weight="700" fill="#f4eee3" letter-spacing="1.5"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">MINDSET</textPath></text>
+        <text font-size="10.5" font-weight="700" fill="#f4eee3" letter-spacing="1.5"><textPath href="#arcBot" startOffset="50%" text-anchor="middle">IN MOTION</textPath></text>
+        <circle cx="50" cy="54" r="15" fill="#f4eee3"/>
+        <path d="M50 46l6 4.5-2.3 7h-7.4l-2.3-7z" fill="#1d4d36"/>
+        <circle cx="18" cy="56" r="2" fill="#e8a83a"/><circle cx="82" cy="56" r="2" fill="#e8a83a"/>
+      </svg>
       <span class="logo-text">Mindset in Motion</span>
     </a>
-    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">Menu</button>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     <nav class="nav-links">
-      <a href="#mission">Mission</a>
+      <a href="#mission">Who we are</a>
       <a href="#events">Events</a>
       <a href="#gallery">Photos</a>
-      <a href="#sports">What's next</a>
       <a href="#team">Team</a>
-      <a href="#involved" class="nav-cta">Get involved</a>
+      <a href="#involved" class="btn btn-clay btn-sm">Get involved</a>
     </nav>
   </div>
 </header>
 
 <main>
 
-  <!-- HERO -->
+  <!-- HERO: full-bleed photo, headline over it -->
   <section class="hero">
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <p class="kicker">Youth-led nonprofit &middot; Founded summer 2026</p>
-        <h1>Get moving.<br>Build the <span class="underline">mindset.</span></h1>
-        <p class="hero-lead">We run free soccer games, lessons and races with kids in underserved communities, because every kid deserves a field to play on and people cheering them on.</p>
-        <div class="hero-cta">
-          <a href="#involved" class="btn btn-clay">Volunteer with us</a>
-          <a href="#gallery" class="btn btn-line">See the photos</a>
-        </div>
+    <div class="hero-copy">
+      <h1>Get moving.<br>Build the mindset.</h1>
+      <p>Free soccer games, lessons and races for kids in underserved communities, run by young people who love the game.</p>
+      <div class="hero-cta">
+        <a href="#involved" class="btn btn-clay">Get involved</a>
+        <a href="#events" class="btn btn-ghost">See our events</a>
       </div>
-      <div class="hero-photos" id="heroPhotos" aria-hidden="true"></div>
+    </div>
+    <img class="hero-img" src="photos/team-photo.jpg" alt="Kids from the Boys & Girls Club with the Mindset in Motion team on the field">
+  </section>
+
+  <!-- INTRO -->
+  <section id="mission" class="section intro">
+    <div class="wrap narrow center">
+      <h2>Every kid deserves a field to play on</h2>
+      <p class="lead">Mindset in Motion started in the summer of 2026 with a simple idea: show up for kids who don't usually get to play organized sports, and make it the best hour of their week.</p>
+      <p>We team up with community organizations to run free events with games, lessons and races. Kids get to move, compete and have fun, and they learn that effort and a good attitude carry over into everything else. We're not trying to make money. We're trying to make a difference.</p>
     </div>
 
-    <dl class="wrap scoreboard">
-      <div><dt>Events hosted</dt><dd data-count="2">0</dd></div>
-      <div><dt>Community partner</dt><dd data-count="1">0</dd></div>
-      <div><dt>Cost to kids</dt><dd>$<span data-count="0">0</span></dd></div>
-      <div><dt>Sports on deck</dt><dd><span data-count="4">0</span>+</dd></div>
-    </dl>
-
-    <div class="track" aria-hidden="true">
-      <span>1</span><span>2</span><span>3</span><span>4</span>
+    <div class="wrap pillars">
+      <article class="pillar">
+        <img src="photos/pinnies.jpg" alt="Kids pulling on pinnies to pick teams" loading="lazy">
+        <div class="pillar-label"><h3>Play</h3></div>
+        <p>Real games and friendly competition, where every kid gets touches on the ball.</p>
+      </article>
+      <article class="pillar">
+        <img src="photos/pushup-race.jpg" alt="Kids racing through push-ups on the grass" loading="lazy">
+        <div class="pillar-label"><h3>Mindset</h3></div>
+        <p>We celebrate effort, teamwork and getting back up after you fall.</p>
+      </article>
+      <article class="pillar">
+        <img src="photos/huddle.jpg" alt="Kids in a huddle raising their hands" loading="lazy">
+        <div class="pillar-label"><h3>Community</h3></div>
+        <p>We partner with local organizations that already know their kids best.</p>
+      </article>
     </div>
   </section>
 
-  <!-- MISSION -->
-  <section id="mission" class="section">
+  <!-- IMPACT BAND -->
+  <section class="impact">
     <div class="wrap">
-      <header class="sec-head">
-        <span class="sec-num">01</span>
-        <h2>Our mission</h2>
-      </header>
-      <div class="mission-grid">
-        <p class="mission-big">Sports teach kids things a classroom can't: how to compete, how to lose and come back, how to be a good teammate. We want every kid to get that, not just the ones who can pay for it.</p>
-        <div class="mission-copy">
-          <p>Mindset in Motion started in the summer of 2026. The idea was simple: show up for kids who don't usually get to play organized sports, and make it the best hour of their week.</p>
-          <p>We team up with community organizations to run free events with games, lessons and races. Kids get to move, compete and have fun, and they see that effort and a good attitude carry over into everything else.</p>
-          <blockquote>We're not trying to make money. We're trying to make a difference.</blockquote>
-        </div>
-      </div>
-
-      <ol class="values">
-        <li>
-          <h3>Play</h3>
-          <p>Real games and friendly competition. Every kid gets touches on the ball, whatever their skill level.</p>
-        </li>
-        <li>
-          <h3>Mindset</h3>
-          <p>We celebrate effort, teamwork and getting back up. Those habits stick long after the final whistle.</p>
-        </li>
-        <li>
-          <h3>Community</h3>
-          <p>We work with local organizations that already know their kids best, and we show up for them.</p>
-        </li>
-      </ol>
+      <h2>Our first summer</h2>
+      <dl class="impact-stats">
+        <div><dd data-count="2">0</dd><dt>Events hosted</dt></div>
+        <div><dd data-count="1">0</dd><dt>Community partner</dt></div>
+        <div><dd>$<span data-count="0">0</span></dd><dt>Cost to every kid</dt></div>
+        <div><dd><span data-count="4">0</span>+</dd><dt>Sports we want to add</dt></div>
+      </dl>
     </div>
   </section>
 
   <!-- HOW AN EVENT WORKS -->
-  <section class="section section-green">
+  <section class="section">
     <div class="wrap">
-      <header class="sec-head">
-        <span class="sec-num">02</span>
+      <div class="center narrow">
         <h2>What an event looks like</h2>
-      </header>
-      <p class="sec-intro">About an hour, start to finish. Here's how we usually run it.</p>
-      <ol class="schedule">
-        <li><span class="clock">0:00</span><div><h3>Warm-up</h3><p>Names, high-fives and stretches to get everyone loose.</p></div></li>
-        <li><span class="clock">0:10</span><div><h3>Skills</h3><p>Dribbling, passing and shooting in small groups, so nobody's standing around.</p></div></li>
-        <li><span class="clock">0:30</span><div><h3>Races</h3><p>Sprints and relays. These get competitive fast.</p></div></li>
-        <li><span class="clock">0:45</span><div><h3>Games</h3><p>Small-sided scrimmages to put it all together, then a team huddle to finish.</p></div></li>
+        <p class="lead">About an hour, start to finish.</p>
+      </div>
+      <ol class="steps">
+        <li><span class="step-n">1</span><h3>Warm-up</h3><p>Names, high-fives and stretches to get everyone loose.</p></li>
+        <li><span class="step-n">2</span><h3>Skills</h3><p>Dribbling, passing and shooting in small groups, so nobody's standing around.</p></li>
+        <li><span class="step-n">3</span><h3>Races</h3><p>Sprints, relays and push-up races. These get competitive fast.</p></li>
+        <li><span class="step-n">4</span><h3>Games</h3><p>Small-sided scrimmages, then a team huddle to finish.</p></li>
       </ol>
     </div>
   </section>
 
-  <!-- EVENTS -->
-  <section id="events" class="section">
+  <!-- EVENTS as news cards -->
+  <section id="events" class="section section-sand curve-top">
     <div class="wrap">
-      <header class="sec-head">
-        <span class="sec-num">03</span>
-        <h2>Events</h2>
-      </header>
-      <div class="events" id="timeline"></div>
+      <div class="center narrow">
+        <h2>Our events</h2>
+        <p class="lead">Where we've been, and what's coming up.</p>
+      </div>
+      <div class="event-cards" id="timeline"></div>
     </div>
   </section>
 
   <!-- GALLERY -->
-  <section id="gallery" class="section section-sand">
+  <section id="gallery" class="section">
     <div class="wrap">
-      <header class="sec-head sec-head-row">
-        <div class="sec-head-title">
-          <span class="sec-num">04</span>
-          <h2>Photos</h2>
-        </div>
+      <div class="gallery-head">
+        <h2>Photos</h2>
         <div class="filters" role="tablist" aria-label="Filter photos" id="filters"></div>
-      </header>
+      </div>
       <div class="gallery" id="galleryGrid"></div>
+    </div>
+  </section>
+
+  <!-- PARTNER STRIP -->
+  <section class="partner">
+    <div class="wrap partner-inner">
+      <p class="partner-kicker">Proud to partner with</p>
+      <p class="partner-name">Boys &amp; Girls Club of Union County</p>
+      <a href="#involved" class="partner-link">Want to be our next partner? →</a>
     </div>
   </section>
 
   <!-- SPORTS / VOTE -->
   <section id="sports" class="section">
     <div class="wrap">
-      <header class="sec-head">
-        <span class="sec-num">05</span>
-        <h2>What's next</h2>
-      </header>
-      <p class="sec-intro">Soccer is where we started. We'd like to add more sports. Which one should come next?</p>
+      <div class="center narrow">
+        <h2>What sport should we add next?</h2>
+        <p class="lead">Soccer is where we started. Tell us what to bring next.</p>
+      </div>
       <div class="sports" id="sportsGrid"></div>
-      <p class="vote-note" id="voteNote"></p>
+      <p class="vote-note center" id="voteNote"></p>
     </div>
   </section>
 
   <!-- MINI GAME -->
-  <section class="section section-green game-section">
+  <section class="section section-green curve-top">
     <div class="wrap game-wrap">
       <div>
-        <header class="sec-head">
-          <span class="sec-num">06</span>
-          <h2>Penalty shootout</h2>
-        </header>
-        <p class="sec-intro">Five shots. Click where you want to aim and try to beat the keeper. Corners are your friend.</p>
+        <h2>Take a penalty</h2>
+        <p class="lead">Five shots. Click where you want to aim and try to beat the keeper. Corners are your friend.</p>
         <div class="score">
           <div><span id="goals">0</span><small>Goals</small></div>
           <div><span id="shots">5</span><small>Shots left</small></div>
           <div><span id="best">0</span><small>Best</small></div>
         </div>
-        <button class="btn btn-cream" id="resetGame">New round</button>
+        <button class="btn btn-sun" id="resetGame">New round</button>
       </div>
       <div class="pitch" id="pitch" aria-label="Penalty game: click inside the goal to shoot">
         <div class="goal" id="goal">
@@ -178,37 +180,45 @@
   <!-- TEAM -->
   <section id="team" class="section">
     <div class="wrap">
-      <header class="sec-head">
-        <span class="sec-num">07</span>
-        <h2>The team</h2>
-      </header>
-      <p class="sec-intro">Two friends who love the game. Tap a card to flip it.</p>
+      <div class="center narrow">
+        <h2>Meet the team</h2>
+        <p class="lead">Two friends who love the game. Tap a card to read more.</p>
+      </div>
       <div class="team" id="teamGrid"></div>
     </div>
   </section>
 
   <!-- GET INVOLVED -->
-  <section id="involved" class="section section-sand">
-    <div class="wrap involve-grid">
-      <div>
-        <header class="sec-head">
-          <span class="sec-num">08</span>
-          <h2>Get involved</h2>
-        </header>
-        <p class="sec-intro">Want to help at an event, bring us to your community center, or donate equipment? Send us a note.</p>
-        <div class="tabs" role="tablist">
-          <button class="tab active" data-type="Volunteer" role="tab" aria-selected="true">Volunteer</button>
-          <button class="tab" data-type="Partner" role="tab" aria-selected="false">Partner with us</button>
-          <button class="tab" data-type="Donate gear" role="tab" aria-selected="false">Donate gear</button>
-        </div>
+  <section id="involved" class="section section-sand curve-top">
+    <div class="wrap">
+      <div class="center narrow">
+        <h2>Get involved</h2>
+        <p class="lead">There's a place for you on the team.</p>
+      </div>
+      <div class="ways">
+        <button class="way active" data-type="Volunteer">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="15" r="7"/><path d="M10 42c0-8 6-14 14-14s14 6 14 14"/></svg>
+          <h3>Volunteer</h3><p>Help coach drills and run races at our next event.</p>
+        </button>
+        <button class="way" data-type="Partner">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 40V20l18-12 18 12v20z"/><path d="M19 40V28h10v12"/></svg>
+          <h3>Partner with us</h3><p>Bring Mindset in Motion to your club, school or community center.</p>
+        </button>
+        <button class="way" data-type="Donate gear">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16"/><path d="M24 15l7 5-3 8h-8l-3-8z"/></svg>
+          <h3>Donate gear</h3><p>Balls, cones and pinnies help us run more events.</p>
+        </button>
       </div>
       <form class="form" id="contactForm" novalidate>
         <input type="hidden" name="type" id="formType" value="Volunteer">
-        <label>Name<input name="name" required autocomplete="name"></label>
-        <label>Email<input name="email" type="email" required autocomplete="email"></label>
+        <p class="form-title">Contact us about: <strong id="formTypeLabel">Volunteer</strong></p>
+        <div class="form-row">
+          <label>Name<input name="name" required autocomplete="name"></label>
+          <label>Email<input name="email" type="email" required autocomplete="email"></label>
+        </div>
         <label id="orgLabel" hidden>Organization<input name="org"></label>
         <label>Message<textarea name="message" rows="4" placeholder="Tell us a little about yourself and when you're free…" id="msgField"></textarea></label>
-        <button class="btn btn-clay" type="submit">Send</button>
+        <button class="btn btn-clay" type="submit">Send message</button>
         <p class="form-status" id="formStatus" role="status"></p>
       </form>
     </div>
@@ -216,11 +226,8 @@
 
   <!-- FAQ -->
   <section class="section">
-    <div class="wrap faq-wrap">
-      <header class="sec-head">
-        <span class="sec-num">09</span>
-        <h2>Questions</h2>
-      </header>
+    <div class="wrap narrow">
+      <h2 class="center">Questions</h2>
       <div class="faq">
         <details>
           <summary>Does it cost anything?</summary>
@@ -232,7 +239,7 @@
         </details>
         <details>
           <summary>Who do you work with?</summary>
-          <p>So far, the Boys &amp; Girls Club of Union. We'd like to work with more community centers, schools and youth programs.</p>
+          <p>So far, the Boys &amp; Girls Club of Union County. We'd like to work with more community centers, schools and youth programs.</p>
         </details>
         <details>
           <summary>How can I help if I can't come in person?</summary>
@@ -247,20 +254,19 @@
 <footer class="footer">
   <div class="wrap footer-inner">
     <div>
-      <a href="#top" class="logo">
-        <span class="logo-mark" aria-hidden="true">M</span>
-        <span class="logo-text">Mindset in Motion</span>
-      </a>
+      <p class="footer-name">Mindset in Motion</p>
       <p class="footer-tag">Free sports for kids. Since summer 2026.</p>
+      <a class="footer-mail" href="mailto:mindsetinmotionkids@gmail.com">mindsetinmotionkids@gmail.com</a>
     </div>
     <nav class="footer-links">
-      <a href="#mission">Mission</a>
+      <a href="#mission">Who we are</a>
       <a href="#events">Events</a>
       <a href="#gallery">Photos</a>
+      <a href="#team">Team</a>
       <a href="#involved">Get involved</a>
     </nav>
-    <p class="footer-copy">&copy; <span id="year"></span> Mindset in Motion</p>
   </div>
+  <div class="wrap footer-copy">&copy; <span id="year"></span> Mindset in Motion</div>
 </footer>
 
 <!-- LIGHTBOX -->
