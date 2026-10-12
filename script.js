@@ -5,12 +5,11 @@
    ========================================================= */
 const CONFIG = {
   // Where the contact form sends messages (opens the visitor's email app).
-  // Leave "" to just show a thank-you message.
-  contactEmail: "",
+  contactEmail: "mindsetinmotionkids@gmail.com",
 
   team: [
     {
-      name: "Founder",           // ← put your name here
+      name: "Sebastian Steketee",
       role: "Founder & Lead",
       number: 1,
       photo: "",                 // e.g. "photos/founder.jpg"
@@ -29,7 +28,7 @@ const CONFIG = {
     {
       id: "event1",
       title: "Event #1: Kickoff",
-      date: "Summer 2026",
+      date: "Aug 10, 2026",
       partner: "Boys & Girls Club of Union",
       status: "done",
       summary: "Our very first event. An hour of soccer games and races with the kids at the Boys & Girls Club of Union.",
@@ -38,11 +37,11 @@ const CONFIG = {
     {
       id: "event2",
       title: "Event #2: Back for More",
-      date: "Summer 2026",
+      date: "Aug 17, 2026",
       partner: "Boys & Girls Club of Union",
       status: "done",
       summary: "We came back to the Boys & Girls Club of Union for round two, with more games, more races and more energy.",
-      highlights: ["Soccer lessons and drills", "Team races", "Games with the whole group"]
+      highlights: ["Push-up races and fitness challenges", "Pinnie-team games", "Soccer lessons and drills"]
     },
     {
       id: "next",
@@ -58,14 +57,11 @@ const CONFIG = {
   // Drop your images into the /photos folder and list them here.
   // event: must match an event id above. layout: "", "wide" or "tall".
   photos: [
-    { src: "photos/event1-1.jpg", caption: "Kickoff at the Boys & Girls Club of Union", event: "event1", layout: "wide" },
-    { src: "photos/event1-2.jpg", caption: "Race time",                              event: "event1", layout: "tall" },
-    { src: "photos/event1-3.jpg", caption: "Game on",                                event: "event1", layout: "" },
-    { src: "photos/event1-4.jpg", caption: "Team huddle",                            event: "event1", layout: "" },
-    { src: "photos/event2-1.jpg", caption: "Back for round two",                     event: "event2", layout: "" },
-    { src: "photos/event2-2.jpg", caption: "Lessons and drills",                     event: "event2", layout: "wide" },
-    { src: "photos/event2-3.jpg", caption: "Relay races",                            event: "event2", layout: "tall" },
-    { src: "photos/event2-4.jpg", caption: "The whole crew",                         event: "event2", layout: "" }
+    { src: "photos/team-photo.jpg",  caption: "The whole crew",                       event: "event1", layout: "wide" },
+    { src: "photos/ball-skills.jpg", caption: "Working on first touches",             event: "event1", layout: "tall" },
+    { src: "photos/pushup-race.jpg", caption: "Push-up race",                         event: "event2", layout: "tall" },
+    { src: "photos/huddle.jpg",      caption: "Huddle up: hands up if you're ready",  event: "event1", layout: "wide" },
+    { src: "photos/pinnies.jpg",     caption: "Picking teams",                        event: "event2", layout: "tall" }
   ],
 
   sports: [
