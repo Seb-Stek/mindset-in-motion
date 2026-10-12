@@ -12,12 +12,14 @@ const CONFIG = {
     {
       name: "Founder",           // ← put your name here
       role: "Founder & Lead",
+      number: 1,
       photo: "",                 // e.g. "photos/founder.jpg"
       bio: "Started Mindset in Motion in the summer of 2026 to bring free, high-energy sports events to kids who don't always get the chance to play. Plans the events, builds the partnerships, and runs the show on game day."
     },
     {
       name: "Boris",
       role: "Co-Founder",
+      number: 2,
       photo: "",                 // e.g. "photos/boris.jpg"
       bio: "Helped launch Mindset in Motion from day one. Runs drills, keeps the races competitive, and makes sure every kid gets in on the action."
     }
@@ -67,11 +69,11 @@ const CONFIG = {
   ],
 
   sports: [
-    { key: "soccer",     name: "Soccer",     emoji: "⚽", current: true },
-    { key: "basketball", name: "Basketball", emoji: "🏀" },
-    { key: "tennis",     name: "Tennis",     emoji: "🎾" },
-    { key: "volleyball", name: "Volleyball", emoji: "🏐" },
-    { key: "other",      name: "Something else", emoji: "✨" }
+    { key: "soccer",     name: "Soccer",     current: true },
+    { key: "basketball", name: "Basketball" },
+    { key: "tennis",     name: "Tennis" },
+    { key: "volleyball", name: "Volleyball" },
+    { key: "other",      name: "Something else" }
   ]
 };
 
@@ -84,20 +86,23 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
 };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const shortTitle = ev => ev.title.split(":")[0];
 
 $("#year").textContent = new Date().getFullYear();
 
 /* ---------- Nav ---------- */
 const nav = $(".nav");
 const toggle = $(".nav-toggle");
-addEventListener("scroll", () => nav.classList.toggle("scrolled", scrollY > 40), { passive: true });
+addEventListener("scroll", () => nav.classList.toggle("scrolled", scrollY > 10), { passive: true });
 toggle.addEventListener("click", () => {
   const open = nav.classList.toggle("open");
   toggle.setAttribute("aria-expanded", open);
+  toggle.textContent = open ? "Close" : "Menu";
 });
 $$(".nav-links a").forEach(a => a.addEventListener("click", () => {
   nav.classList.remove("open");
   toggle.setAttribute("aria-expanded", false);
+  toggle.textContent = "Menu";
 }));
 
 /* ---------- Reveal on scroll + counters ---------- */
@@ -107,15 +112,18 @@ const io = new IntersectionObserver(entries => {
     e.target.classList.add("in");
     io.unobserve(e.target);
   });
-}, { threshold: .15 });
-function observeReveals() { $$(".reveal:not(.in)").forEach(el => io.observe(el)); }
+}, { threshold: .12 });
+function observeReveals() {
+  $$(".values li, .schedule li, .ev, .member, .mission-grid > *").forEach(el => el.classList.add("reveal"));
+  $$(".reveal:not(.in)").forEach(el => io.observe(el));
+}
 
 function countUp(el) {
-  const target = +el.dataset.count, suffix = el.dataset.suffix || "";
-  const start = performance.now(), dur = 1200;
+  const target = +el.dataset.count;
+  const start = performance.now(), dur = 1000;
   const tick = now => {
     const p = Math.min((now - start) / dur, 1);
-    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + (p === 1 ? suffix : "");
+    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
     if (p < 1) requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
@@ -123,66 +131,78 @@ function countUp(el) {
 const statsIO = new IntersectionObserver(entries => {
   if (entries[0].isIntersecting) { $$("[data-count]").forEach(countUp); statsIO.disconnect(); }
 });
-statsIO.observe($(".stats"));
+statsIO.observe($(".scoreboard"));
 
-/* ---------- Placeholder for missing photos ---------- */
-const phColors = ["#13274a", "#1e3d2f", "#3a2347", "#40261c", "#173a4a"];
-function placeholder(label, i = 0) {
+/* ---------- Photos (with a placeholder until the real file exists) ---------- */
+function placeholder(src) {
   const d = document.createElement("div");
   d.className = "placeholder";
-  d.style.setProperty("--ph", phColors[i % phColors.length]);
-  d.innerHTML = `<div><b>📸</b>${esc(label)}</div>`;
+  d.innerHTML = `<strong>Photo coming soon</strong><small>${esc(src || "")}</small>`;
   return d;
 }
-function imgOrPlaceholder(src, alt, label, i) {
-  if (!src) return placeholder(label, i);
+function photo(src, alt) {
+  if (!src) return placeholder(src);
   const img = new Image();
   img.src = src; img.alt = alt; img.loading = "lazy";
-  img.onerror = () => img.replaceWith(placeholder(label, i));
+  img.onerror = () => img.replaceWith(placeholder(src));
   return img;
 }
 
-/* ---------- Timeline ---------- */
+/* Hero: the first three photos, pinned up like prints */
+const heroPhotos = $("#heroPhotos");
+CONFIG.photos.slice(0, 3).forEach(p => {
+  const fig = document.createElement("figure");
+  fig.className = "print";
+  fig.appendChild(photo(p.src, p.caption));
+  const cap = document.createElement("figcaption");
+  cap.textContent = p.caption;
+  fig.appendChild(cap);
+  heroPhotos.appendChild(fig);
+});
+
+/* ---------- Events ---------- */
 const timeline = $("#timeline");
 CONFIG.events.forEach((ev, i) => {
   const count = CONFIG.photos.filter(p => p.event === ev.id).length;
-  const item = document.createElement("div");
-  item.className = `t-item reveal ${ev.status === "upcoming" ? "upcoming" : ""}`;
+  const upcoming = ev.status === "upcoming";
+  const item = document.createElement("article");
+  item.className = `ev ${upcoming ? "upcoming" : ""} ${i === 0 ? "open" : ""}`;
   item.innerHTML = `
-    <div class="t-card ${i === 0 ? "open" : ""}">
-      <button class="t-head" aria-expanded="${i === 0}">
-        <div>
-          <h3>${esc(ev.title)}</h3>
-          <span class="t-meta">${esc(ev.date)} · ${esc(ev.partner)}</span>
-        </div>
-        <span style="display:flex;gap:.8rem;align-items:center">
-          <span class="t-badge">${ev.status === "upcoming" ? "Upcoming" : "Completed ✓"}</span>
-          <span class="t-chev">⌄</span>
-        </span>
-      </button>
-      <div class="t-body"><div><div class="t-body-inner">
-        <p>${esc(ev.summary)}</p>
-        ${ev.highlights.length ? `<ul>${ev.highlights.map(h => `<li>${esc(h)}</li>`).join("")}</ul>` : ""}
-        ${count ? `<button class="t-link" data-filter="${ev.id}">View ${count} photos →</button>`
-                : ev.status === "upcoming" ? `<a class="t-link" href="#involved">Partner with us →</a>` : ""}
-      </div></div></div>
-    </div>`;
+    <button class="ev-head" aria-expanded="${i === 0}">
+      <span class="ev-date">${esc(ev.date)}</span>
+      <span>
+        <h3>${esc(ev.title)}</h3>
+        <span class="ev-partner">${esc(ev.partner)}</span>
+      </span>
+      <span style="display:flex;gap:1rem;align-items:center">
+        <span class="ev-status">${upcoming ? "Upcoming" : "Done"}</span>
+        <span class="ev-toggle">${i === 0 ? "–" : "+"}</span>
+      </span>
+    </button>
+    <div class="ev-body"><div><div class="ev-inner">
+      <p>${esc(ev.summary)}</p>
+      ${ev.highlights.length ? `<ul>${ev.highlights.map(h => `<li>${esc(h)}</li>`).join("")}</ul>` : ""}
+      ${count ? `<button class="ev-link" data-filter="${ev.id}">See the photos from this event</button>`
+              : upcoming ? `<a class="ev-link" href="#involved">Get in touch about hosting</a>` : ""}
+    </div></div></div>`;
   timeline.appendChild(item);
 });
 timeline.addEventListener("click", e => {
   const link = e.target.closest("[data-filter]");
   if (link) { setFilter(link.dataset.filter); $("#gallery").scrollIntoView(); return; }
-  const head = e.target.closest(".t-head");
+  const head = e.target.closest(".ev-head");
   if (head) {
-    const card = head.parentElement;
-    head.setAttribute("aria-expanded", card.classList.toggle("open"));
+    const ev = head.parentElement;
+    const open = ev.classList.toggle("open");
+    head.setAttribute("aria-expanded", open);
+    $(".ev-toggle", head).textContent = open ? "–" : "+";
   }
 });
 
 /* ---------- Gallery + filters + lightbox ---------- */
 const grid = $("#galleryGrid");
 const filters = $("#filters");
-const filterDefs = [{ id: "all", label: "All" }, ...CONFIG.events.filter(e => CONFIG.photos.some(p => p.event === e.id)).map(e => ({ id: e.id, label: e.title.split(":")[0] }))];
+const filterDefs = [{ id: "all", label: "All" }, ...CONFIG.events.filter(e => CONFIG.photos.some(p => p.event === e.id)).map(e => ({ id: e.id, label: shortTitle(e) }))];
 filters.innerHTML = filterDefs.map((f, i) => `<button class="chip ${i ? "" : "active"}" role="tab" data-f="${f.id}">${esc(f.label)}</button>`).join("");
 filters.addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) setFilter(b.dataset.f); });
 
@@ -192,7 +212,7 @@ CONFIG.photos.forEach((p, i) => {
   fig.dataset.event = p.event;
   fig.dataset.index = i;
   fig.setAttribute("aria-label", `Open photo: ${p.caption}`);
-  fig.appendChild(imgOrPlaceholder(p.src, p.caption, `Add ${p.src}`, i));
+  fig.appendChild(photo(p.src, p.caption));
   const cap = document.createElement("figcaption");
   cap.textContent = p.caption;
   fig.appendChild(cap);
@@ -212,9 +232,9 @@ function openLB(i) {
   const p = CONFIG.photos[i];
   const media = $("#lbMedia");
   media.innerHTML = "";
-  media.appendChild(imgOrPlaceholder(p.src, p.caption, `Add ${p.src}`, i));
+  media.appendChild(photo(p.src, p.caption));
   const ev = CONFIG.events.find(e => e.id === p.event);
-  $("#lbCaption").textContent = p.caption + (ev ? `  ·  ${ev.title.split(":")[0]}` : "");
+  $("#lbCaption").textContent = p.caption + (ev ? `, ${shortTitle(ev)}` : "");
   lb.hidden = false;
   document.body.style.overflow = "hidden";
 }
@@ -239,25 +259,33 @@ addEventListener("keydown", e => {
 /* ---------- Sports vote ----------
    Votes are saved in this visitor's browser only. To collect real votes
    from everyone, connect a form service or a small backend later. */
+const ICONS = {
+  soccer: `<circle cx="24" cy="24" r="20"/><path d="M24 15l7 5-3 8h-8l-3-8z"/><path d="M24 4v11M31 20l11-4M28 28l6 10M20 28l-6 10M17 20L6 16"/>`,
+  basketball: `<circle cx="24" cy="24" r="20"/><path d="M4 24h40M24 4v40"/><path d="M10 9c6 5 6 25 0 30M38 9c-6 5-6 25 0 30"/>`,
+  tennis: `<circle cx="24" cy="24" r="20"/><path d="M8 12c8 6 8 18 0 24M40 12c-8 6-8 18 0 24"/>`,
+  volleyball: `<circle cx="24" cy="24" r="20"/><path d="M24 24V4M24 24l17 10M24 24L7 34"/><path d="M24 4c8 6 11 15 9 25M41 34c-10 3-19 1-26-6M7 34c0-10 6-18 16-22"/>`,
+  other: `<circle cx="24" cy="24" r="20" stroke-dasharray="4 4"/><path d="M24 16v16M16 24h16"/>`
+};
+const icon = k => `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k] || ICONS.other}</svg>`;
+
 const sportsGrid = $("#sportsGrid");
-const seedVotes = { basketball: 0, tennis: 0, volleyball: 0, other: 0 };
-let votes = store.get("mim-votes", seedVotes);
+let votes = store.get("mim-votes", {});
 let myVote = store.get("mim-myvote", null);
 
 function renderSports() {
   const total = Object.values(votes).reduce((a, b) => a + b, 0);
   sportsGrid.innerHTML = CONFIG.sports.map(s => {
-    if (s.current) return `<div class="sport current"><span class="emoji">${s.emoji}</span><strong>${esc(s.name)}</strong><br><span class="tag">Playing now</span></div>`;
+    if (s.current) return `<div class="sport current">${icon(s.key)}<h3>${esc(s.name)}</h3><span class="tag">Playing now</span></div>`;
     const pct = total ? Math.round((votes[s.key] || 0) / total * 100) : 0;
     return `<button class="sport ${myVote === s.key ? "voted" : ""}" data-k="${s.key}" ${myVote ? "disabled" : ""}>
-      <span class="emoji">${s.emoji}</span><strong>${esc(s.name)}</strong><br>
+      ${icon(s.key)}<h3>${esc(s.name)}</h3>
       <span class="tag">${myVote === s.key ? "Your pick" : "Coming soon"}</span>
       <span class="pct">${myVote ? pct + "%" : ""}</span>
       <span class="bar" style="width:${myVote ? pct : 0}%"></span>
     </button>`;
   }).join("");
   $("#voteNote").innerHTML = myVote
-    ? `Thanks for voting! <button class="t-link" id="revote">Change vote</button>`
+    ? `Thanks for voting. <button class="ev-link" id="revote">Change my vote</button>`
     : "Tap a sport to vote.";
 }
 sportsGrid.addEventListener("click", e => {
@@ -277,21 +305,21 @@ $("#voteNote").addEventListener("click", e => {
 });
 renderSports();
 
-/* ---------- Team flip cards ---------- */
+/* ---------- Team jersey cards ---------- */
 $("#teamGrid").innerHTML = CONFIG.team.map(m => `
-  <button class="member reveal" aria-label="${esc(m.name)}: tap to read bio">
+  <button class="member" aria-label="${esc(m.name)}: tap to read bio">
     <div class="member-inner">
       <div class="face front">
-        <div class="avatar">${m.photo ? `<img src="${esc(m.photo)}" alt="${esc(m.name)}">` : esc(m.name[0])}</div>
+        <div class="avatar">${m.photo ? `<img src="${esc(m.photo)}" alt="${esc(m.name)}">` : `<span class="jersey-num">${esc(m.number ?? "")}</span>`}</div>
+        <span class="hint">Tap to flip</span>
         <div class="info">
           <h3>${esc(m.name)}</h3>
           <div class="role">${esc(m.role)}</div>
-          <div class="hint">Tap to flip ↻</div>
         </div>
       </div>
       <div class="face back">
         <h3>${esc(m.name)}</h3>
-        <strong>${esc(m.role)}</strong>
+        <span class="role">${esc(m.role)}</span>
         <p>${esc(m.bio)}</p>
       </div>
     </div>
@@ -304,7 +332,7 @@ let goals = 0, shots = 5, busy = false, best = store.get("mim-best", 0);
 $("#best").textContent = best;
 
 function say(text) { msg.textContent = text; msg.classList.remove("pop"); void msg.offsetWidth; msg.classList.add("pop"); }
-function resetBall() { ballEl.style.left = "calc(50% - 17px)"; ballEl.style.bottom = "10%"; ballEl.style.transform = "scale(1)"; }
+function resetBall() { ballEl.style.left = "calc(50% - 16px)"; ballEl.style.bottom = "10%"; ballEl.style.transform = "scale(1)"; }
 function resetKeeper() { keeper.style.left = "50%"; keeper.style.bottom = "0"; }
 
 goalEl.addEventListener("click", e => {
@@ -315,11 +343,11 @@ goalEl.addEventListener("click", e => {
   const xPct = (e.clientX - g.left) / g.width;               // 0..1 across the goal
   const yPct = 1 - (e.clientY - g.top) / g.height;           // 0 bottom .. 1 top
 
-  ballEl.style.left = `${e.clientX - pitch.left - 17}px`;
-  ballEl.style.bottom = `${pitch.bottom - e.clientY - 17}px`;
+  ballEl.style.left = `${e.clientX - pitch.left - 16}px`;
+  ballEl.style.bottom = `${pitch.bottom - e.clientY - 16}px`;
   ballEl.style.transform = "scale(.65)";
 
-  // Keeper dives to a random third; corners and high shots are harder to save.
+  // Keeper dives to a random third; high shots in the corners can't be saved.
   const dive = Math.floor(Math.random() * 3);                // 0 left, 1 middle, 2 right
   keeper.style.left = ["20%", "50%", "80%"][dive];
   keeper.style.bottom = dive === 1 ? "0" : "6%";
@@ -329,15 +357,15 @@ goalEl.addEventListener("click", e => {
 
   shots--;
   setTimeout(() => {
-    if (saved) say(["Saved! 🧤", "Keeper read it!", "Denied!"][Math.floor(Math.random() * 3)]);
-    else { goals++; say(corner ? "TOP BINS! 🔥" : "GOOOAL! ⚽"); }
+    if (saved) say(["Saved", "Keeper read it", "Denied"][Math.floor(Math.random() * 3)]);
+    else { goals++; say(corner ? "Top corner!" : "Goal!"); }
     $("#goals").textContent = goals;
     $("#shots").textContent = shots;
     setTimeout(() => {
       resetBall(); resetKeeper(); busy = false;
       if (shots === 0) {
         if (goals > best) { best = goals; store.set("mim-best", best); $("#best").textContent = best; }
-        say(goals >= 4 ? `${goals}/5. Elite mindset! 🏆` : goals >= 2 ? `${goals}/5. Keep pushing 💪` : `${goals}/5. Run it back!`);
+        say(goals >= 4 ? `${goals} of 5. Clinical.` : goals >= 2 ? `${goals} of 5. Not bad.` : `${goals} of 5. Run it back.`);
       } else say("Click the goal to shoot");
     }, 1100);
   }, 450);
@@ -352,7 +380,7 @@ $("#resetGame").addEventListener("click", () => {
 const form = $("#contactForm");
 const prompts = {
   "Volunteer": "Tell us a little about yourself and when you're free…",
-  "Partner": "Tell us about your organization and the kids you serve…",
+  "Partner": "Tell us about your organization and the kids you work with…",
   "Donate gear": "What equipment would you like to donate?"
 };
 $$(".tab").forEach(t => t.addEventListener("click", () => {
@@ -375,17 +403,16 @@ form.addEventListener("submit", e => {
   });
   if (!ok) { status.className = "form-status err"; status.textContent = "Please add your name and a valid email."; return; }
 
-  if (CONFIG.contactEmail) {
-    const subject = `Mindset in Motion: ${data.type} inquiry from ${data.name}`;
-    const body = `Name: ${data.name}\nEmail: ${data.email}\n${data.org ? `Organization: ${data.org}\n` : ""}\n${data.message}`;
-    location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  } else {
+  if (!CONFIG.contactEmail) {
     status.className = "form-status err";
     status.textContent = "Our contact form isn't connected yet. Check back soon!";
     return;
   }
+  const subject = `Mindset in Motion: ${data.type} inquiry from ${data.name}`;
+  const body = `Name: ${data.name}\nEmail: ${data.email}\n${data.org ? `Organization: ${data.org}\n` : ""}\n${data.message}`;
+  location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   status.className = "form-status ok";
-  status.textContent = `Thanks, ${data.name.split(" ")[0]}! We'll be in touch soon. 🙌`;
+  status.textContent = `Thanks, ${data.name.split(" ")[0]}. We'll be in touch soon.`;
   form.reset();
 });
 
