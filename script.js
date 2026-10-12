@@ -1,38 +1,45 @@
 /* =========================================================
    EDIT YOUR CONTENT HERE
    Everything that changes often (team, events, photos, email)
-   lives in this CONFIG object. No HTML editing required.
+   lives in this CONFIG object. Every page reads from it, so a
+   change here shows up across the whole site.
    ========================================================= */
 const CONFIG = {
   // Where the contact form sends messages (opens the visitor's email app).
   contactEmail: "mindsetinmotionkids@gmail.com",
 
+  // Shown on the About us page. focus: what each person does on game day.
   team: [
     {
       name: "Sebastian Steketee",
       role: "Founder & Lead",
       number: 1,
-      photo: "",                 // e.g. "photos/founder.jpg"
-      bio: "Started Mindset in Motion in the summer of 2026 to bring free, high-energy sports events to kids who don't always get the chance to play. Plans the events, builds the partnerships, and runs the show on game day."
+      photo: "",                 // e.g. "photos/sebastian.jpg"
+      bio: "Started Mindset in Motion in the summer of 2026 to bring free, high-energy sports events to kids who don't always get the chance to play.",
+      focus: ["Plans each event", "Builds partnerships with community organizations", "Runs the show on game day"]
     },
     {
       name: "Boris",
       role: "Co-Founder",
       number: 2,
       photo: "",                 // e.g. "photos/boris.jpg"
-      bio: "Helped launch Mindset in Motion from day one. Runs drills, keeps the races competitive, and makes sure every kid gets in on the action."
+      bio: "Helped launch Mindset in Motion from day one and has been at every event since.",
+      focus: ["Runs drills and skills groups", "Keeps the races competitive", "Makes sure every kid gets in on the action"]
     }
   ],
 
+  // place and length show up on the Events page.
   events: [
     {
       id: "event1",
       title: "Event #1: Kickoff",
       date: "Aug 10, 2026",
       cover: "photos/huddle.jpg",   // photo shown on the event card
-      partner: "Boys & Girls Club of Union County",
+      partner: "Boys & Girls Clubs of Union County",
+      place: "Outside on the field",
+      length: "About an hour",
       status: "done",
-      summary: "Our very first event. An hour of soccer games and races outside on the field with the kids at the Boys & Girls Club of Union County.",
+      summary: "Our very first event. An hour of soccer games and races outside on the field with the kids at the Boys & Girls Clubs of Union County.",
       highlights: ["Soccer games and small-sided scrimmages", "Sprint, relay and push-up races", "Picking teams with pinnies"]
     },
     {
@@ -40,9 +47,11 @@ const CONFIG = {
       title: "Event #2: Back for More",
       date: "Aug 17, 2026",
       cover: "photos/event2-demo.jpg",
-      partner: "Boys & Girls Club of Union County",
+      partner: "Boys & Girls Clubs of Union County",
+      place: "Russell Triolo Clubhouse gym",
+      length: "About an hour",
       status: "done",
-      summary: "We came back to the Boys & Girls Club of Union County for round two, this time inside the clubhouse gym.",
+      summary: "We came back to the Boys & Girls Clubs of Union County for round two, this time inside the gym at the Russell Triolo Clubhouse.",
       highlights: ["Indoor soccer in the clubhouse gym", "Dribbling drills around cones", "Shooting on goal and small-sided scrimmages"]
     },
     {
@@ -51,7 +60,7 @@ const CONFIG = {
       date: "TBA",
       partner: "Want to host? Get in touch!",
       status: "upcoming",
-      summary: "We're planning our next event and looking for new community partners. Reach out if your organization would like to host.",
+      summary: "We're planning our next event and looking for new community partners. Reach out if your organization would like to host, or sign up to hear when it's scheduled.",
       highlights: []
     }
   ],
@@ -82,7 +91,7 @@ const CONFIG = {
     { src: "photos/event2-gym-tour.jpg",  video: "photos/event2-gym-tour.mp4",  caption: "Setting up the gym",     event: "event2", sport: "soccer", layout: "" }
   ],
 
-  // Tap a sport on the site to see its photos and how to sign up.
+  // Tap a sport on the Sports page to see its photos and how to sign up.
   // status: "now" (we run events for it) or "soon" (people can join an interest list).
   // Optional: signup: ["step 1", "step 2", ...] to replace the default steps.
   sports: [
@@ -110,6 +119,9 @@ const mediaCount = list => {
   return [ph && plural(ph, "photo"), v && plural(v, "video")].filter(Boolean).join(" and ");
 };
 const PLAY = `<span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span>`;
+const ARR = `<span class="arr" aria-hidden="true">→</span>`;
+const params = new URLSearchParams(location.search);
+const withIndex = list => list.map(p => ({ ...p, i: CONFIG.photos.indexOf(p) }));
 
 /* ---------- Motion helpers ----------
    Visitors who turn on "reduce motion" in their system settings still get
@@ -117,7 +129,6 @@ const PLAY = `<span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><pa
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const canHover = matchMedia("(hover: hover)").matches;
 const EASE = "cubic-bezier(.22,1,.36,1)";
-const SPRING = "cubic-bezier(.34,1.56,.64,1)";
 const animate = (el, kf, o) => el.animate(kf, o);
 const wait = ms => new Promise(r => setTimeout(r, ms));
 const smooth = reduced ? "auto" : "smooth";
@@ -133,7 +144,7 @@ function countTo(el, to, dur = 900, suffix = "") {
   requestAnimationFrame(tick);
 }
 
-// Little burst of confetti in the site colors, for goals, votes and messages.
+// Little burst of confetti in the site colors, for sent messages.
 const CONFETTI = ["#f0b43c", "#b5452a", "#1d4d36", "#f7f3ea", "#f0b43c"];
 function confetti(x, y, count = 28, power = 1) {
   if (reduced) count = Math.round(count / 3);
@@ -173,6 +184,47 @@ document.addEventListener("click", async e => {
 
 $("#year").textContent = new Date().getFullYear();
 
+/* ---------- Photos (with a placeholder until the real file exists) ---------- */
+function placeholder() {
+  const d = document.createElement("div");
+  d.className = "placeholder";
+  d.textContent = "Photo coming soon";
+  return d;
+}
+function photo(src, alt, lazy = true) {
+  if (!src) return placeholder();
+  const img = new Image();
+  img.src = src; img.alt = alt;
+  if (lazy) img.loading = "lazy";
+  img.onerror = () => img.replaceWith(placeholder());
+  return img;
+}
+// Up to n items, taking turns between events so every event shows up
+function featured(pics, n = 5) {
+  const byEvent = Object.values(pics.reduce((m, p) => ((m[p.event] ||= []).push(p), m), {}));
+  const out = [];
+  for (let r = 0; out.length < Math.min(n, pics.length); r++) byEvent.forEach(list => { if (list[r] && out.length < n) out.push(list[r]); });
+  return out;
+}
+// A mosaic of thumbnails: one big, the rest small. Tapping opens the viewer.
+function mosaic(list) {
+  return `<div class="sp-grid">${list.map((p, n) =>
+    `<button class="sp-thumb ${n === 0 ? "big" : ""}" data-index="${p.i}" aria-label="${p.video ? "Play video" : "Open photo"}: ${esc(p.caption)}">${p.video ? PLAY : ""}</button>`).join("")}</div>`;
+}
+function fillThumbs(root) {
+  $$(".sp-thumb", root).forEach(t => {
+    const p = CONFIG.photos[+t.dataset.index];
+    t.prepend(photo(p.src, p.caption));
+  });
+}
+// Any mosaic on any page opens the viewer with just that mosaic's photos
+document.addEventListener("click", e => {
+  const t = e.target.closest(".sp-thumb");
+  if (!t) return;
+  const list = $$(".sp-thumb", t.closest(".sp-grid")).map(x => +x.dataset.index);
+  openLB(+t.dataset.index, t, list);
+});
+
 /* ---------- Nav: menu, scroll progress, hide on scroll down ---------- */
 const nav = $(".nav");
 const toggle = $(".nav-toggle");
@@ -183,7 +235,6 @@ function setMenu(open) {
   if (open) nav.classList.remove("tucked");
 }
 toggle.addEventListener("click", () => setMenu(!nav.classList.contains("open")));
-$$(".nav-links a").forEach(a => a.addEventListener("click", () => setMenu(false)));
 document.addEventListener("click", e => { if (nav.classList.contains("open") && !nav.contains(e.target)) setMenu(false); });
 
 const progress = $(".progress");
@@ -203,36 +254,30 @@ function onScroll() {
     lastY = y;
   }
   toTop.classList.toggle("show", y > 900);
-  if (pending?.size) revealPassed();
+  if (pending.size) revealPassed();
   if (!reduced) {
-    const h = heroMedia.offsetHeight;
-    if (y < h + 200) heroImg.style.setProperty("--py", `${Math.min(y * .1, h * .05)}px`);
+    if (heroMedia) {
+      const h = heroMedia.offsetHeight;
+      if (y < h + 200) heroImg.style.setProperty("--py", `${Math.min(y * .1, h * .05)}px`);
+    }
     crestBall.style.transform = `rotate(${y * .3}deg)`;
   }
 }
 addEventListener("scroll", () => { if (!scrollQueued) { scrollQueued = true; requestAnimationFrame(onScroll); } }, { passive: true });
 toTop.addEventListener("click", () => scrollTo({ top: 0, behavior: smooth }));
 
-// Sliding underline under the section you're reading
+// Underline sits under the current page and slides to whatever link you hover
 const navLinks = $$(".nav-links a:not(.btn)");
 const indicator = $(".nav-indicator");
-let activeLink = null;
-function moveIndicator() {
-  if (!activeLink) { indicator.style.opacity = 0; return; }
+const activeLink = navLinks.find(a => a.classList.contains("active")) || null;
+function moveIndicator(link = activeLink) {
+  if (!link) { indicator.style.opacity = 0; return; }
   indicator.style.opacity = 1;
-  indicator.style.width = `${activeLink.offsetWidth}px`;
-  indicator.style.transform = `translateX(${activeLink.offsetLeft}px)`;
+  indicator.style.width = `${link.offsetWidth}px`;
+  indicator.style.transform = `translateX(${link.offsetLeft}px)`;
 }
-const spy = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    activeLink = navLinks.find(a => a.hash === `#${e.target.id}`) || null;
-    navLinks.forEach(a => a.classList.toggle("active", a === activeLink));
-    moveIndicator();
-  });
-}, { rootMargin: "-40% 0px -55% 0px" });
-$(".hero").id ||= "hero";
-["hero", "mission", "events", "gallery", "team", "involved"].forEach(id => spy.observe(document.getElementById(id)));
+navLinks.forEach(a => a.addEventListener("pointerenter", () => moveIndicator(a)));
+$(".nav-links").addEventListener("pointerleave", () => moveIndicator());
 
 /* ---------- Scroll reveals ----------
    Things fade up as they come into view. Items that arrive together
@@ -259,7 +304,7 @@ function reveal(selector, fn) {
     io.observe(el);
   });
 }
-// Failsafe: anything you jumped past (nav links, End key) is shown, so scrolling back up never finds blanks.
+// Failsafe: anything you jumped past (links, End key) is shown, so scrolling back up never finds blanks.
 function revealPassed() {
   pending.forEach(el => { if (el.getBoundingClientRect().bottom < 0) show(el); });
 }
@@ -288,25 +333,9 @@ $$("[data-count]").forEach(el => {
   el.innerHTML = `<span class="sr">${target}</span><span class="roll" aria-hidden="true"><span class="roll-col">${seq.map(n => `<span>${n}</span>`).join("")}</span></span>`;
 });
 
-/* ---------- Photos (with a placeholder until the real file exists) ---------- */
-function placeholder() {
-  const d = document.createElement("div");
-  d.className = "placeholder";
-  d.textContent = "Photo coming soon";
-  return d;
-}
-function photo(src, alt, lazy = true) {
-  if (!src) return placeholder();
-  const img = new Image();
-  img.src = src; img.alt = alt;
-  if (lazy) img.loading = "lazy";
-  img.onerror = () => img.replaceWith(placeholder());
-  return img;
-}
-
-/* ---------- Events (news-style cards) ---------- */
+/* ---------- Home: event cards ---------- */
 const timeline = $("#timeline");
-CONFIG.events.forEach(ev => {
+if (timeline) CONFIG.events.forEach(ev => {
   const pics = CONFIG.photos.filter(p => p.event === ev.id);
   const cover = ev.cover || pics[0]?.src;
   const upcoming = ev.status === "upcoming";
@@ -322,54 +351,106 @@ CONFIG.events.forEach(ev => {
       <h3>${esc(ev.title)}</h3>
       <p class="ev-partner">${esc(ev.partner)}</p>
       <p class="ev-summary">${esc(ev.summary)}</p>
-      ${ev.highlights?.length ? `<ul class="ev-highlights">${ev.highlights.map(h => `<li>${esc(h)}</li>`).join("")}</ul>` : ""}
-      ${pics.length ? `<button class="ev-link" data-filter="${ev.id}">See ${mediaCount(pics)} <span class="arr" aria-hidden="true">→</span></button>`
-                    : upcoming ? `<a class="ev-link" href="#involved" data-way="Partner">Host an event with us <span class="arr" aria-hidden="true">→</span></a>` : ""}
+      ${pics.length ? `<a class="ev-link" href="events.html#${ev.id}">Read the recap ${ARR}</a>`
+                    : upcoming ? `<a class="ev-link" href="get-involved.html?type=Partner">Host an event with us ${ARR}</a>` : ""}
     </div>`;
   timeline.appendChild(card);
 });
-timeline.addEventListener("click", e => {
-  const link = e.target.closest("[data-filter]");
-  if (link) {
-    $("#gallery").scrollIntoView({ behavior: smooth });
-    setTimeout(() => setFilter(link.dataset.filter), reduced ? 0 : 700);
-  }
-  const host = e.target.closest("[data-way]");
-  if (host) chooseWay($(`.way[data-type="${host.dataset.way}"]`), false);
-});
 
-/* ---------- Gallery + filters ---------- */
+/* ---------- Events page: up next + full recaps ---------- */
+const upNext = $("#upNext");
+if (upNext) {
+  const ev = CONFIG.events.find(e => e.status === "upcoming");
+  if (ev) upNext.innerHTML = `
+    <article class="upnext">
+      <div class="upnext-date"><span class="ev-badge next">Up next</span><strong>${esc(ev.date)}</strong></div>
+      <div class="upnext-body">
+        <h2>${esc(ev.title)}</h2>
+        <p>${esc(ev.summary)}</p>
+      </div>
+      <div class="upnext-btns">
+        <a class="btn btn-clay" href="get-involved.html?type=Partner">Host an event ${ARR}</a>
+        <a class="btn btn-outline" href="get-involved.html?type=Sign%20up">Get notified</a>
+      </div>
+    </article>`;
+  else upNext.closest("section").remove();
+}
+const eventList = $("#eventList");
+if (eventList) {
+  CONFIG.events.filter(e => e.status === "done").reverse().forEach(ev => {
+    const pics = withIndex(CONFIG.photos.filter(p => p.event === ev.id));
+    const coverFirst = [...pics].sort((a, b) => (b.src === ev.cover) - (a.src === ev.cover));
+    const facts = [["Date", ev.date], ["Where", ev.place], ["Partner", ev.partner], ["Length", ev.length]].filter(f => f[1]);
+    const el = document.createElement("article");
+    el.className = "event-feature";
+    el.id = ev.id;
+    el.innerHTML = `
+      <div class="ef-media">${pics.length ? mosaic(coverFirst.slice(0, 5)) : ""}
+        ${pics.length ? `<a class="see-all" href="photos.html?event=${ev.id}">See all ${mediaCount(pics)} ${ARR}</a>` : ""}
+      </div>
+      <div class="ef-body">
+        <span class="ev-date">${esc(ev.date)}</span>
+        <h3>${esc(ev.title)}</h3>
+        <p class="ef-summary">${esc(ev.summary)}</p>
+        <dl class="ef-facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+        ${ev.highlights?.length ? `<h4>What we did</h4><ul class="ev-highlights">${ev.highlights.map(h => `<li>${esc(h)}</li>`).join("")}</ul>` : ""}
+      </div>`;
+    eventList.appendChild(el);
+    fillThumbs(el);
+  });
+}
+
+/* ---------- Home: photo strip ---------- */
+const strip = $("#photoStrip");
+if (strip) {
+  strip.innerHTML = mosaic(withIndex(featured(CONFIG.photos, 5)));
+  fillThumbs(strip);
+}
+
+/* ---------- Photos page: gallery + filters ---------- */
 const grid = $("#galleryGrid");
 const filters = $("#filters");
-const filterDefs = [
-  { id: "all", label: "All", n: CONFIG.photos.length },
-  ...CONFIG.events.filter(e => CONFIG.photos.some(p => p.event === e.id))
-    .map(e => ({ id: e.id, label: shortTitle(e), n: CONFIG.photos.filter(p => p.event === e.id).length }))
-];
-filters.innerHTML = `<span class="chip-pill" aria-hidden="true"></span>` + filterDefs.map((f, i) =>
-  `<button class="chip ${i ? "" : "active"}" role="tab" aria-selected="${!i}" data-f="${f.id}">${esc(f.label)}<span class="n">${f.n}</span></button>`).join("");
-filters.addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) setFilter(b.dataset.f); });
-const pill = $(".chip-pill", filters);
+let pill = null;
 function movePill() {
+  if (!filters) return;
   const a = $(".chip.active", filters);
   pill.style.width = `${a.offsetWidth}px`;
   pill.style.height = `${a.offsetHeight}px`;
   pill.style.transform = `translate(${a.offsetLeft}px, ${a.offsetTop}px)`;
 }
+const matches = (g, id) => id === "all" || g.dataset.event === id || (id === "videos" && g.classList.contains("is-video"));
+const visiblePhotos = () => grid ? $$(".g-item:not(.hide)", grid).map(g => +g.dataset.index) : [];
 
-CONFIG.photos.forEach((p, i) => {
-  const fig = document.createElement("button");
-  fig.className = `g-item ${p.layout || ""}`;
-  fig.dataset.event = p.event;
-  fig.dataset.index = i;
-  fig.setAttribute("aria-label", `${p.video ? "Play video" : "Open photo"}: ${p.caption}`);
-  fig.appendChild(photo(p.src, p.caption));
-  if (p.video) { fig.classList.add("is-video"); fig.insertAdjacentHTML("beforeend", PLAY); hoverPreview(fig, p.video); }
-  const cap = document.createElement("figcaption");
-  cap.textContent = p.caption;
-  fig.appendChild(cap);
-  grid.appendChild(fig);
-});
+if (grid) {
+  const vids = CONFIG.photos.filter(p => p.video).length;
+  const filterDefs = [
+    { id: "all", label: "All", n: CONFIG.photos.length },
+    ...CONFIG.events.filter(e => CONFIG.photos.some(p => p.event === e.id))
+      .map(e => ({ id: e.id, label: shortTitle(e), n: CONFIG.photos.filter(p => p.event === e.id).length })),
+    ...(vids ? [{ id: "videos", label: "Videos", n: vids }] : [])
+  ];
+  filters.innerHTML = `<span class="chip-pill" aria-hidden="true"></span>` + filterDefs.map((f, i) =>
+    `<button class="chip ${i ? "" : "active"}" role="tab" aria-selected="${!i}" data-f="${f.id}">${esc(f.label)}<span class="n">${f.n}</span></button>`).join("");
+  filters.addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) setFilter(b.dataset.f); });
+  pill = $(".chip-pill", filters);
+
+  CONFIG.photos.forEach((p, i) => {
+    const fig = document.createElement("button");
+    fig.className = `g-item ${p.layout || ""}`;
+    fig.dataset.event = p.event;
+    fig.dataset.index = i;
+    fig.setAttribute("aria-label", `${p.video ? "Play video" : "Open photo"}: ${p.caption}`);
+    fig.appendChild(photo(p.src, p.caption));
+    if (p.video) { fig.classList.add("is-video"); fig.insertAdjacentHTML("beforeend", PLAY); hoverPreview(fig, p.video); }
+    const cap = document.createElement("figcaption");
+    cap.textContent = p.caption;
+    fig.appendChild(cap);
+    grid.appendChild(fig);
+  });
+  grid.addEventListener("click", e => { const g = e.target.closest(".g-item"); if (g) openLB(+g.dataset.index, g, visiblePhotos()); });
+  const start = params.get("event");
+  setFilter(filterDefs.some(f => f.id === start) ? start : "all", false);
+}
 
 // Videos play silently while you hover over them (desktop only)
 function hoverPreview(el, src) {
@@ -389,6 +470,7 @@ function hoverPreview(el, src) {
 // In the two-column layout an odd number of tall photos leaves a hole,
 // so the last one stretches across both columns.
 function fillGaps() {
+  if (!grid) return;
   const shown = $$(".g-item:not(.hide)", grid);
   shown.forEach(g => g.classList.remove("fill"));
   if (getComputedStyle(grid).gridTemplateColumns.split(" ").length !== 2) return;
@@ -397,7 +479,7 @@ function fillGaps() {
 }
 
 // Photos glide to their new spots when you change the filter (the "FLIP" technique).
-function setFilter(id) {
+function setFilter(id, animateIt = true) {
   $$(".chip", filters).forEach(c => {
     c.classList.toggle("active", c.dataset.f === id);
     c.setAttribute("aria-selected", c.dataset.f === id);
@@ -406,11 +488,13 @@ function setFilter(id) {
   const items = $$(".g-item", grid);
   const before = new Map(items.map(g => [g, g.getBoundingClientRect()]));
   const wasHidden = new Set(items.filter(g => g.classList.contains("hide")));
-  items.forEach(g => g.classList.toggle("hide", id !== "all" && g.dataset.event !== id));
+  items.forEach(g => g.classList.toggle("hide", !matches(g, id)));
   fillGaps();
+  const shown = items.filter(g => !g.classList.contains("hide"));
+  $("#galleryCount").textContent = `Showing ${mediaCount(shown.map(g => CONFIG.photos[+g.dataset.index]))}`;
+  if (!animateIt) return;
   let n = 0;
-  items.forEach(g => {
-    if (g.classList.contains("hide")) return;
+  shown.forEach(g => {
     if (reduced) { g.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400 }); return; }
     if (wasHidden.has(g)) {
       g.animate([{ opacity: 0, transform: "scale(.85)" }, { opacity: 1, transform: "none" }],
@@ -430,7 +514,7 @@ function setFilter(id) {
 const lb = $("#lightbox");
 const lbMedia = $("#lbMedia");
 let lbIndex = 0, lbOpen = false, lastFocus = null, lbList = [];
-const visiblePhotos = () => $$(".g-item:not(.hide)", grid).map(g => +g.dataset.index);
+const stopVideo = () => $("video", lbMedia)?.pause();
 function showPhoto(i, dir = 0) {
   lbIndex = i;
   const p = CONFIG.photos[i];
@@ -451,7 +535,7 @@ function showPhoto(i, dir = 0) {
   if (dir) animate(img, [{ opacity: 0, transform: reduced ? "none" : `translateX(${dir * 70}px) scale(.96)` }, { opacity: 1, transform: "none" }], { duration: 480, easing: EASE });
   return img;
 }
-function openLB(i, fromEl, list = visiblePhotos()) {
+function openLB(i, fromEl, list) {
   lbList = list;
   lastFocus = document.activeElement;
   lbOpen = true;
@@ -477,7 +561,6 @@ function openLB(i, fromEl, list = visiblePhotos()) {
   };
   img.complete ? zoom() : img.addEventListener("load", zoom, { once: true });
 }
-const stopVideo = () => $("video", lbMedia)?.pause();
 function closeLB() {
   if (!lbOpen) return;
   lbOpen = false;
@@ -493,11 +576,9 @@ function closeLB() {
   lastFocus?.focus({ preventScroll: true });
 }
 function stepLB(dir) {
-  const list = lbList;
-  const pos = list.indexOf(lbIndex);
-  showPhoto(list[(pos + dir + list.length) % list.length], dir);
+  const pos = lbList.indexOf(lbIndex);
+  showPhoto(lbList[(pos + dir + lbList.length) % lbList.length], dir);
 }
-grid.addEventListener("click", e => { const g = e.target.closest(".g-item"); if (g) openLB(+g.dataset.index, g); });
 $(".lb-close").onclick = closeLB;
 $(".lb-prev").onclick = () => stepLB(-1);
 $(".lb-next").onclick = () => stepLB(1);
@@ -524,7 +605,7 @@ lb.addEventListener("touchend", e => {
   touchX = null;
 });
 
-/* ---------- Sports: tap one to see its photos and how to sign up ---------- */
+/* ---------- Sports ---------- */
 const ICONS = {
   soccer: `<circle cx="24" cy="24" r="20"/><path d="M24 15l7 5-3 8h-8l-3-8z"/><path d="M24 4v11M31 20l11-4M28 28l6 10M20 28l-6 10M17 20L6 16"/>`,
   basketball: `<circle cx="24" cy="24" r="20"/><path d="M4 24h40M24 4v40"/><path d="M10 9c6 5 6 25 0 30M38 9c-6 5-6 25 0 30"/>`,
@@ -533,10 +614,20 @@ const ICONS = {
   other: `<circle cx="24" cy="24" r="20" stroke-dasharray="4 4"/><path d="M24 16v16M16 24h16"/>`
 };
 const icon = k => `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k] || ICONS.other}</svg>`;
+const sportCard = (s, tag = "button") => `
+  <${tag} class="sport ${s.status === "now" ? "current" : ""}" ${tag === "a" ? `href="sports.html?sport=${s.key}"` : `role="tab" aria-selected="false" aria-controls="sportPanel"`} data-k="${s.key}">
+    ${icon(s.key)}<h3>${esc(s.name)}</h3>
+    <span class="tag">${s.status === "now" ? "Playing now" : "Coming soon"}</span>
+  </${tag}>`;
 
+// Home: small tiles that jump to that sport on the Sports page
+const sportTiles = $("#sportTiles");
+if (sportTiles) sportTiles.innerHTML = CONFIG.sports.map(s => sportCard(s, "a")).join("");
+
+// Sports page: tap one to see its photos and how to sign up
 const sportsGrid = $("#sportsGrid");
 const sportPanel = $("#sportPanel");
-const sportPhotos = key => CONFIG.photos.map((p, i) => ({ ...p, i })).filter(p => p.sport === key);
+const sportPhotos = key => withIndex(CONFIG.photos.filter(p => p.sport === key));
 const signupSteps = s => s.signup || (s.status === "now"
   ? [`Send us a sign-up message with the player's name and age.`,
      `We'll reply with the date and place of our next ${s.name.toLowerCase()} event.`,
@@ -545,28 +636,14 @@ const signupSteps = s => s.signup || (s.status === "now"
      `We'll email you as soon as our first ${s.name.toLowerCase()} event is scheduled.`,
      `Show up and play. It's always free.`]);
 
-sportsGrid.innerHTML = CONFIG.sports.map(s => `
-  <button class="sport ${s.status === "now" ? "current" : ""}" role="tab" aria-selected="false" aria-controls="sportPanel" data-k="${s.key}">
-    ${icon(s.key)}<h3>${esc(s.name)}</h3>
-    <span class="tag">${s.status === "now" ? "Playing now" : "Coming soon"}</span>
-  </button>`).join("");
-
-// Up to 5 thumbnails, taking turns between events so every event shows up
-function featured(pics) {
-  const byEvent = Object.values(pics.reduce((m, p) => ((m[p.event] ||= []).push(p), m), {}));
-  const out = [];
-  for (let r = 0; out.length < Math.min(5, pics.length); r++) byEvent.forEach(list => { if (list[r] && out.length < 5) out.push(list[r]); });
-  return out;
-}
 function renderSportPanel(s) {
   const pics = sportPhotos(s.key);
   const name = esc(s.name), lower = esc(s.name.toLowerCase());
   return `
     <div class="sp-photos">
       <h3>${name} photos</h3>
-      ${pics.length ? `<div class="sp-grid">${featured(pics).map((p, n) =>
-          `<button class="sp-thumb ${n === 0 ? "big" : ""}" data-index="${p.i}" aria-label="${p.video ? "Play video" : "Open photo"}: ${esc(p.caption)}">${p.video ? PLAY : ""}</button>`).join("")}</div>
-        ${pics.length > 5 ? `<button class="ev-link sp-all">See all ${mediaCount(pics)} <span class="arr" aria-hidden="true">→</span></button>` : ""}`
+      ${pics.length ? `${mosaic(featured(pics))}
+        ${pics.length > 5 ? `<a class="ev-link sp-all" href="photos.html">See all ${mediaCount(pics)} ${ARR}</a>` : ""}`
       : `<div class="sp-empty">${icon(s.key)}<p>No ${lower} photos yet. They'll show up here after our first ${lower} event.</p></div>`}
     </div>
     <div class="sp-signup">
@@ -574,7 +651,7 @@ function renderSportPanel(s) {
       <h3>How to sign up for ${lower}</h3>
       <p>${esc(s.about || "")}</p>
       <ol class="sp-steps">${signupSteps(s).map(t => `<li>${esc(t)}</li>`).join("")}</ol>
-      <button class="btn btn-clay" data-signup="${s.key}">${s.status === "now" ? `Sign up for ${lower}` : `Join the ${lower} list`} <span class="arr" aria-hidden="true">→</span></button>
+      <a class="btn btn-clay" href="get-involved.html?type=Sign%20up&amp;sport=${s.key}">${s.status === "now" ? `Sign up for ${lower}` : `Join the ${lower} list`} ${ARR}</a>
     </div>`;
 }
 
@@ -590,163 +667,153 @@ function chooseSport(key) {
   });
   const start = sportPanel.offsetHeight;
   sportPanel.innerHTML = `<div class="sp-inner">${renderSportPanel(s)}</div>`;
-  // Fill the thumbnails with real images (or placeholders if a file is missing)
-  $$(".sp-thumb", sportPanel).forEach(t => {
-    const p = CONFIG.photos[+t.dataset.index];
-    t.prepend(photo(p.src, p.caption));
-  });
+  fillThumbs(sportPanel);
+  if (!first) history.replaceState(null, "", `?sport=${key}`);
   if (first) return;
   // Grow or shrink smoothly to fit the new sport
   const end = sportPanel.offsetHeight;
   if (start !== end && !reduced) sportPanel.animate({ height: [`${start}px`, `${end}px`] }, { duration: 450, easing: EASE });
 }
-sportsGrid.addEventListener("click", e => { const b = e.target.closest(".sport"); if (b) chooseSport(b.dataset.k); });
-sportsGrid.addEventListener("keydown", e => {               // arrow keys move between sports
-  if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
-  const btns = $$(".sport", sportsGrid);
-  const i = btns.indexOf(document.activeElement);
-  const next = btns[(i + (e.key === "ArrowRight" ? 1 : -1) + btns.length) % btns.length];
-  next.focus();
-  chooseSport(next.dataset.k);
-});
-sportPanel.addEventListener("click", e => {
-  const t = e.target.closest(".sp-thumb");
-  if (t) openLB(+t.dataset.index, t, featured(sportPhotos(currentSport)).map(p => p.i));
-  if (e.target.closest(".sp-all")) {
-    setFilter("all");
-    $("#gallery").scrollIntoView({ behavior: smooth });
-  }
-  const su = e.target.closest("[data-signup]");
-  if (su) {
-    chooseWay($('.way[data-type="Sign up"]'));
-    $("#sportField").value = su.dataset.signup;
-  }
-});
-chooseSport((CONFIG.sports.find(s => s.status === "now") || CONFIG.sports[0]).key);
-
-/* ---------- Team jersey cards: tilt toward the cursor, flip on tap ---------- */
-const flipIcon = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/></svg>`;
-$("#teamGrid").innerHTML = CONFIG.team.map(m => `
-  <button class="member" aria-label="${esc(m.name)}: tap to read bio" aria-pressed="false">
-    <div class="member-inner">
-      <div class="face front">
-        <div class="avatar">${m.photo ? `<img src="${esc(m.photo)}" alt="${esc(m.name)}">` : `<span class="jersey-num">${esc(m.number ?? "")}</span>`}</div>
-        <span class="hint">${flipIcon}Tap to flip</span>
-        <div class="info">
-          <h3>${esc(m.name)}</h3>
-          <div class="role">${esc(m.role)}</div>
-        </div>
-      </div>
-      <div class="face back">
-        <h3>${esc(m.name)}</h3>
-        <span class="role">${esc(m.role)}</span>
-        <p>${esc(m.bio)}</p>
-      </div>
-    </div>
-  </button>`).join("");
-$$(".member").forEach(m => {
-  m.addEventListener("click", () => m.setAttribute("aria-pressed", m.classList.toggle("flipped")));
-  if (reduced || !canHover) return;
-  m.addEventListener("pointermove", e => {
-    const r = m.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-    m.classList.add("tilting");
-    m.style.setProperty("--ry", `${(x - .5) * 12}deg`);
-    m.style.setProperty("--rx", `${(.5 - y) * 9}deg`);
-    m.style.setProperty("--mx", `${x * 100}%`);
-    m.style.setProperty("--my", `${y * 100}%`);
+if (sportsGrid) {
+  sportsGrid.innerHTML = CONFIG.sports.map(s => sportCard(s)).join("");
+  sportsGrid.addEventListener("click", e => { const b = e.target.closest(".sport"); if (b) chooseSport(b.dataset.k); });
+  sportsGrid.addEventListener("keydown", e => {               // arrow keys move between sports
+    if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
+    const btns = $$(".sport", sportsGrid);
+    const i = btns.indexOf(document.activeElement);
+    const next = btns[(i + (e.key === "ArrowRight" ? 1 : -1) + btns.length) % btns.length];
+    next.focus();
+    chooseSport(next.dataset.k);
   });
-  m.addEventListener("pointerleave", () => {
-    m.classList.remove("tilting");
-    m.style.setProperty("--rx", "0deg");
-    m.style.setProperty("--ry", "0deg");
-  });
-});
-
-/* ---------- Get involved form ---------- */
-const form = $("#contactForm");
-const formDone = $("#formDone");
-const submitBtn = $('button[type="submit"]', form);
-$("#sportField").innerHTML = CONFIG.sports.map(s => `<option value="${s.key}">${esc(s.name)}${s.status === "now" ? "" : " (coming soon)"}</option>`).join("");
-const prompts = {
-  "Sign up": "The player's name and age, plus anything we should know…",
-  "Volunteer": "Tell us a little about yourself and when you're free…",
-  "Partner": "Tell us about your organization and the kids you work with…",
-  "Donate gear": "What equipment would you like to donate?"
-};
-function chooseWay(t, scroll = true) {
-  if (!t) return;
-  $$(".way").forEach(x => { x.classList.toggle("active", x === t); x.setAttribute("aria-pressed", x === t); });
-  const type = t.dataset.type;
-  const label = $("#formTypeLabel");
-  if ($("#formType").value !== type) restart(label, "swap");
-  $("#formType").value = type;
-  label.textContent = type;
-  const sportLabel = $("#sportLabel");
-  if (type === "Sign up" && sportLabel.hidden) restart(sportLabel, "appear");
-  sportLabel.hidden = type !== "Sign up";
-  const org = $("#orgLabel");
-  const showOrg = type === "Partner";
-  if (showOrg && org.hidden) restart(org, "appear");
-  org.hidden = !showOrg;
-  $("#msgField").placeholder = prompts[type];
-  if (scroll) form.scrollIntoView({ block: "center", behavior: smooth });
-  setTimeout(() => restart(form, "flash"), scroll && !reduced ? 350 : 0);
+  const asked = CONFIG.sports.find(s => s.key === params.get("sport"));
+  chooseSport((asked || CONFIG.sports.find(s => s.status === "now") || CONFIG.sports[0]).key);
 }
-$$(".way").forEach(t => {
-  t.setAttribute("aria-pressed", t.classList.contains("active"));
-  t.addEventListener("click", () => chooseWay(t));
-});
 
-const fieldOK = el => el.name === "email" ? /^\S+@\S+\.\S+$/.test(el.value.trim()) : !!el.value.trim();
-["name", "email"].forEach(n => {
-  const el = form.elements[n];
-  el.addEventListener("blur", () => { if (el.value) { el.classList.toggle("valid", fieldOK(el)); el.classList.toggle("invalid", !fieldOK(el)); } });
-  el.addEventListener("input", () => { if (el.classList.contains("invalid") && fieldOK(el)) { el.classList.remove("invalid"); el.classList.add("valid"); } });
-});
+/* ---------- About page: the people ---------- */
+const people = $("#people");
+if (people) {
+  people.innerHTML = CONFIG.team.map(m => `
+    <article class="person">
+      <div class="person-art">${m.photo ? `<img src="${esc(m.photo)}" alt="${esc(m.name)}" loading="lazy">` : `<span class="jersey-num" aria-hidden="true">${esc(m.number ?? "")}</span>`}</div>
+      <div class="person-body">
+        <h3>${esc(m.name)}</h3>
+        <span class="person-role">${esc(m.role)}</span>
+        <p>${esc(m.bio)}</p>
+        ${m.focus?.length ? `<h4>On game day</h4><ul class="ev-highlights">${m.focus.map(f => `<li>${esc(f)}</li>`).join("")}</ul>` : ""}
+      </div>
+    </article>`).join("") + `
+    <a class="person person-join" href="get-involved.html?type=Volunteer">
+      <div class="person-art"><span class="jersey-num" aria-hidden="true">?</span></div>
+      <div class="person-body">
+        <h3>You?</h3>
+        <span class="person-role">Volunteer</span>
+        <p>We're looking for people who love sports to help coach drills and run races at our events.</p>
+        <span class="see-all">Join the team ${ARR}</span>
+      </div>
+    </a>`;
+  if (!reduced && canHover) $$(".person", people).forEach(card => {
+    card.addEventListener("pointermove", e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${(e.clientX - r.left) / r.width * 100}%`);
+      card.style.setProperty("--my", `${(e.clientY - r.top) / r.height * 100}%`);
+    });
+  });
+}
 
-form.addEventListener("submit", async e => {
-  e.preventDefault();
-  const status = $("#formStatus");
-  const data = Object.fromEntries(new FormData(form));
-  const bad = ["name", "email"].map(n => form.elements[n]).filter(el => !fieldOK(el));
-  ["name", "email"].forEach(n => form.elements[n].classList.remove("invalid"));
-  if (bad.length) {
-    void form.offsetWidth;
-    bad.forEach(el => el.classList.add("invalid"));
-    bad[0].focus();
-    status.className = "form-status err";
-    status.textContent = "Please add your name and a valid email.";
-    return;
+/* ---------- Get involved: form ---------- */
+const form = $("#contactForm");
+let chooseWay = () => {};
+if (form) {
+  const formDone = $("#formDone");
+  const submitBtn = $('button[type="submit"]', form);
+  $("#sportField").innerHTML = CONFIG.sports.map(s => `<option value="${s.key}">${esc(s.name)}${s.status === "now" ? "" : " (coming soon)"}</option>`).join("");
+  const prompts = {
+    "Sign up": "The player's name and age, plus anything we should know…",
+    "Volunteer": "Tell us a little about yourself and when you're free…",
+    "Partner": "Tell us about your organization and the kids you work with…",
+    "Donate gear": "What equipment would you like to donate?"
+  };
+  chooseWay = (t, scroll = true) => {
+    if (!t) return;
+    $$(".way").forEach(x => { x.classList.toggle("active", x === t); x.setAttribute("aria-pressed", x === t); });
+    const type = t.dataset.type;
+    const label = $("#formTypeLabel");
+    if ($("#formType").value !== type) restart(label, "swap");
+    $("#formType").value = type;
+    label.textContent = type;
+    const sportLabel = $("#sportLabel");
+    if (type === "Sign up" && sportLabel.hidden) restart(sportLabel, "appear");
+    sportLabel.hidden = type !== "Sign up";
+    const org = $("#orgLabel");
+    const showOrg = type === "Partner";
+    if (showOrg && org.hidden) restart(org, "appear");
+    org.hidden = !showOrg;
+    $("#msgField").placeholder = prompts[type];
+    if (scroll) form.scrollIntoView({ block: "center", behavior: smooth });
+    setTimeout(() => restart(form, "flash"), scroll && !reduced ? 350 : 0);
+  };
+  $$(".way").forEach(t => {
+    t.setAttribute("aria-pressed", t.classList.contains("active"));
+    t.addEventListener("click", () => chooseWay(t));
+  });
+  // Links from other pages can pre-pick the form, e.g. get-involved.html?type=Sign%20up&sport=soccer
+  const askedWay = $$(".way").find(w => w.dataset.type === params.get("type"));
+  if (askedWay) {
+    chooseWay(askedWay, false);
+    if (params.get("sport")) $("#sportField").value = params.get("sport");
+    setTimeout(() => chooseWay(askedWay), reduced ? 0 : 900);
   }
-  status.textContent = "";
-  if (!CONFIG.contactEmail) {
-    status.className = "form-status err";
-    status.textContent = "Our contact form isn't connected yet. Check back soon!";
-    return;
-  }
-  submitBtn.classList.add("sending");
-  submitBtn.firstChild.textContent = "Opening your email… ";
-  await wait(450);
-  const signup = data.type === "Sign up";
-  const sportName = CONFIG.sports.find(s => s.key === data.sport)?.name || "";
-  const subject = signup ? `Mindset in Motion: ${sportName} sign-up from ${data.name}` : `Mindset in Motion: ${data.type} inquiry from ${data.name}`;
-  const body = `Name: ${data.name}\nEmail: ${data.email}\n${signup ? `Sport: ${sportName}\n` : ""}${data.type === "Partner" && data.org ? `Organization: ${data.org}\n` : ""}\n${data.message}`;
-  location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  submitBtn.classList.remove("sending");
-  submitBtn.firstChild.textContent = "Send message ";
-  $("#doneTitle").textContent = `Almost there, ${data.name.trim().split(" ")[0]}`;
-  formDone.hidden = false;
-  form.classList.add("is-done");
-  setTimeout(() => confetti(...centerOf($(".check", formDone)), 26, .9), 650);
-});
-$("#formAgain").addEventListener("click", () => {
-  form.reset();
-  $$(".valid, .invalid", form).forEach(el => el.classList.remove("valid", "invalid"));
-  formDone.hidden = true;
-  form.classList.remove("is-done");
-  form.elements.name.focus();
-});
+
+  const fieldOK = el => el.name === "email" ? /^\S+@\S+\.\S+$/.test(el.value.trim()) : !!el.value.trim();
+  ["name", "email"].forEach(n => {
+    const el = form.elements[n];
+    el.addEventListener("blur", () => { if (el.value) { el.classList.toggle("valid", fieldOK(el)); el.classList.toggle("invalid", !fieldOK(el)); } });
+    el.addEventListener("input", () => { if (el.classList.contains("invalid") && fieldOK(el)) { el.classList.remove("invalid"); el.classList.add("valid"); } });
+  });
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const status = $("#formStatus");
+    const data = Object.fromEntries(new FormData(form));
+    const bad = ["name", "email"].map(n => form.elements[n]).filter(el => !fieldOK(el));
+    ["name", "email"].forEach(n => form.elements[n].classList.remove("invalid"));
+    if (bad.length) {
+      void form.offsetWidth;
+      bad.forEach(el => el.classList.add("invalid"));
+      bad[0].focus();
+      status.className = "form-status err";
+      status.textContent = "Please add your name and a valid email.";
+      return;
+    }
+    status.textContent = "";
+    if (!CONFIG.contactEmail) {
+      status.className = "form-status err";
+      status.textContent = "Our contact form isn't connected yet. Check back soon!";
+      return;
+    }
+    submitBtn.classList.add("sending");
+    submitBtn.firstChild.textContent = "Opening your email… ";
+    await wait(450);
+    const signup = data.type === "Sign up";
+    const sportName = CONFIG.sports.find(s => s.key === data.sport)?.name || "";
+    const subject = signup ? `Mindset in Motion: ${sportName} sign-up from ${data.name}` : `Mindset in Motion: ${data.type} inquiry from ${data.name}`;
+    const body = `Name: ${data.name}\nEmail: ${data.email}\n${signup ? `Sport: ${sportName}\n` : ""}${data.type === "Partner" && data.org ? `Organization: ${data.org}\n` : ""}\n${data.message}`;
+    location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    submitBtn.classList.remove("sending");
+    submitBtn.firstChild.textContent = "Send message ";
+    $("#doneTitle").textContent = `Almost there, ${data.name.trim().split(" ")[0]}`;
+    formDone.hidden = false;
+    form.classList.add("is-done");
+    setTimeout(() => confetti(...centerOf($(".check", formDone)), 26, .9), 650);
+  });
+  $("#formAgain").addEventListener("click", () => {
+    form.reset();
+    $$(".valid, .invalid", form).forEach(el => el.classList.remove("valid", "invalid"));
+    formDone.hidden = true;
+    form.classList.remove("is-done");
+    form.elements.name.focus();
+  });
+}
 
 /* ---------- FAQ: smooth open and close ---------- */
 $$(".faq details").forEach(d => {
@@ -777,8 +844,8 @@ $$(".faq details").forEach(d => {
 /* ---------- Wire up reveals (after all dynamic content exists) ---------- */
 $$("main h2").forEach(splitWords);
 reveal("main h2");
-reveal(".section .lead, .intro .narrow p:not(.lead)");
-reveal(".pillar, .steps li, .ev-card, .gallery-head .filters, .g-item, .partner-inner > *, .sport, .sport-panel, .member, .way, .form, .faq details, .footer-inner > *");
+reveal(".section .lead, .intro .narrow p:not(.lead), .story-text p, .split-copy > :not(h2), .cta-inner > *, .more-link");
+reveal(".tile, .pillar, .steps li, .ev-card, .event-feature, .upnext, .gallery-head > *, .g-item, .partner-inner > *, .sport, .sport-panel, .person, .feature, .timeline li, .split-media, .photo-strip, .way, .form, .contact-aside, .faq details, .footer-inner > *");
 reveal(".impact-stats > div", (el, d) => $$("[data-count]", el).forEach(n => roll(n, d)));
 
 const relayout = () => { moveIndicator(); movePill(); fillGaps(); };
