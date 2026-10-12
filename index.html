@@ -9,9 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="preload" as="image" href="photos/team-photo.jpg" fetchpriority="high">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%231d4d36'/><circle cx='50' cy='50' r='40' fill='none' stroke='%23e8a83a' stroke-width='4'/><text x='50' y='67' font-size='46' text-anchor='middle' font-family='Arial Narrow,Arial' font-weight='900' fill='%23f4eee3'>M</text></svg>">
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
 <header class="nav" id="top">
   <div class="wrap nav-inner">
@@ -23,7 +25,7 @@
         <text font-size="10.5" font-weight="700" fill="#f4eee3" letter-spacing="1.5"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">MINDSET</textPath></text>
         <text font-size="10.5" font-weight="700" fill="#f4eee3" letter-spacing="1.5"><textPath href="#arcBot" startOffset="50%" text-anchor="middle">IN MOTION</textPath></text>
         <circle cx="50" cy="54" r="15" fill="#f4eee3"/>
-        <path d="M50 46l6 4.5-2.3 7h-7.4l-2.3-7z" fill="#1d4d36"/>
+        <path class="crest-ball" d="M50 46l6 4.5-2.3 7h-7.4l-2.3-7z" fill="#1d4d36"/>
         <circle cx="18" cy="56" r="2" fill="#e8a83a"/><circle cx="82" cy="56" r="2" fill="#e8a83a"/>
       </svg>
       <span class="logo-text">Mindset in Motion</span>
@@ -35,23 +37,28 @@
       <a href="#gallery">Photos</a>
       <a href="#team">Team</a>
       <a href="#involved" class="btn btn-clay btn-sm">Get involved</a>
+      <span class="nav-indicator" aria-hidden="true"></span>
     </nav>
   </div>
+  <div class="progress" aria-hidden="true"></div>
 </header>
 
-<main>
+<main id="main">
 
   <!-- HERO: full-bleed photo, headline over it -->
   <section class="hero">
     <div class="hero-copy">
-      <h1>Get moving.<br>Build the mindset.</h1>
+      <h1 class="hero-title"><span class="line"><span>Get moving.</span></span> <span class="line"><span>Build the</span></span> <span class="line"><span>mindset.</span></span></h1>
       <p>Free soccer games, lessons and races for kids in underserved communities, run by young people who love the game.</p>
       <div class="hero-cta">
-        <a href="#involved" class="btn btn-clay">Get involved</a>
+        <a href="#involved" class="btn btn-clay">Get involved <span class="arr" aria-hidden="true">→</span></a>
         <a href="#events" class="btn btn-ghost">See our events</a>
       </div>
     </div>
-    <img class="hero-img" src="photos/team-photo.jpg" alt="Kids from the Boys & Girls Club with the Mindset in Motion team on the field">
+    <div class="hero-media">
+      <img class="hero-img" src="photos/team-photo.jpg" alt="Kids from the Boys & Girls Club with the Mindset in Motion team on the field" fetchpriority="high">
+      <p class="hero-caption"><strong>Event #1</strong> with the Boys &amp; Girls Club of Union County</p>
+    </div>
   </section>
 
   <!-- INTRO -->
@@ -64,18 +71,24 @@
 
     <div class="wrap pillars">
       <article class="pillar">
-        <img src="photos/pinnies.jpg" alt="Kids pulling on pinnies to pick teams" loading="lazy">
-        <div class="pillar-label"><h3>Play</h3></div>
+        <div class="pillar-photo">
+          <img src="photos/pinnies.jpg" alt="Kids pulling on pinnies to pick teams" loading="lazy">
+          <div class="pillar-label"><h3>Play</h3></div>
+        </div>
         <p>Real games and friendly competition, where every kid gets touches on the ball.</p>
       </article>
       <article class="pillar">
-        <img src="photos/pushup-race.jpg" alt="Kids racing through push-ups on the grass" loading="lazy">
-        <div class="pillar-label"><h3>Mindset</h3></div>
+        <div class="pillar-photo">
+          <img src="photos/pushup-race.jpg" alt="Kids racing through push-ups on the grass" loading="lazy">
+          <div class="pillar-label"><h3>Mindset</h3></div>
+        </div>
         <p>We celebrate effort, teamwork and getting back up after you fall.</p>
       </article>
       <article class="pillar">
-        <img src="photos/huddle.jpg" alt="Kids in a huddle raising their hands" loading="lazy">
-        <div class="pillar-label"><h3>Community</h3></div>
+        <div class="pillar-photo">
+          <img src="photos/huddle.jpg" alt="Kids in a huddle raising their hands" loading="lazy">
+          <div class="pillar-label"><h3>Community</h3></div>
+        </div>
         <p>We partner with local organizations that already know their kids best.</p>
       </article>
     </div>
@@ -101,7 +114,7 @@
         <h2>What an event looks like</h2>
         <p class="lead">About an hour, start to finish.</p>
       </div>
-      <ol class="steps">
+      <ol class="steps" id="steps">
         <li><span class="step-n">1</span><h3>Warm-up</h3><p>Names, high-fives and stretches to get everyone loose.</p></li>
         <li><span class="step-n">2</span><h3>Skills</h3><p>Dribbling, passing and shooting in small groups, so nobody's standing around.</p></li>
         <li><span class="step-n">3</span><h3>Races</h3><p>Sprints, relays and push-up races. These get competitive fast.</p></li>
@@ -137,7 +150,7 @@
     <div class="wrap partner-inner">
       <p class="partner-kicker">Proud to partner with</p>
       <p class="partner-name">Boys &amp; Girls Club of Union County</p>
-      <a href="#involved" class="partner-link">Want to be our next partner? →</a>
+      <a href="#involved" class="partner-link">Want to be our next partner? <span class="arr" aria-hidden="true">→</span></a>
     </div>
   </section>
 
@@ -159,6 +172,7 @@
       <div>
         <h2>Take a penalty</h2>
         <p class="lead">Five shots. Click where you want to aim and try to beat the keeper. Corners are your friend.</p>
+        <ol class="shot-dots" id="shotDots" aria-label="Shot results"><li></li><li></li><li></li><li></li><li></li></ol>
         <div class="score">
           <div><span id="goals">0</span><small>Goals</small></div>
           <div><span id="shots">5</span><small>Shots left</small></div>
@@ -170,8 +184,10 @@
         <div class="goal" id="goal">
           <div class="net"></div>
           <div class="keeper" id="keeper"></div>
+          <div class="aim" id="aim" aria-hidden="true"></div>
         </div>
-        <div class="shot-ball" id="shotBall"></div>
+        <div class="ball-shadow" id="ballShadow"></div>
+        <div class="shot-ball" id="shotBall"><i></i></div>
         <div class="game-msg" id="gameMsg">Click the goal to shoot</div>
       </div>
     </div>
@@ -218,8 +234,16 @@
         </div>
         <label id="orgLabel" hidden>Organization<input name="org"></label>
         <label>Message<textarea name="message" rows="4" placeholder="Tell us a little about yourself and when you're free…" id="msgField"></textarea></label>
-        <button class="btn btn-clay" type="submit">Send message</button>
+        <button class="btn btn-clay" type="submit">Send message <span class="arr" aria-hidden="true">→</span></button>
         <p class="form-status" id="formStatus" role="status"></p>
+        <div class="form-done" id="formDone" hidden>
+          <svg class="check" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23"/><path d="M15 27.5l7.5 7.5L38 19"/></svg>
+          <h3 id="doneTitle">Almost there</h3>
+          <p>Your email app should have opened with your message ready to go. Just hit send.</p>
+          <p class="done-fallback">Nothing opened? Email us at <a href="mailto:mindsetinmotionkids@gmail.com" class="mail-link">mindsetinmotionkids@gmail.com</a>
+            <button type="button" class="copy-btn" data-copy="mindsetinmotionkids@gmail.com">Copy address</button></p>
+          <button type="button" class="btn btn-outline" id="formAgain">Write another message</button>
+        </div>
       </form>
     </div>
   </section>
@@ -269,8 +293,12 @@
   <div class="wrap footer-copy">&copy; <span id="year"></span> Mindset in Motion</div>
 </footer>
 
+<button class="to-top" id="toTop" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" hidden>
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <p class="lb-count" id="lbCount"></p>
   <button class="lb-close" aria-label="Close">Close ✕</button>
   <button class="lb-prev" aria-label="Previous photo">←</button>
   <figure>
