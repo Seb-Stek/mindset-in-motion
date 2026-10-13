@@ -14,7 +14,7 @@ const CONFIG = {
       name: "Sebastian Steketee",
       role: "Founder & Lead",
       number: 1,
-      photo: "",                 // e.g. "photos/sebastian.jpg"
+      photo: "photos/team-sebastian.jpg",
       bio: "Sebastian plays tennis and soccer at Ridgewood High School in New Jersey, and he's passionate about the mindset behind both. As a freshman he was a varsity starter on the tennis team with an 18-2 record, was nominated for the All-County Second Team, and captained the freshman soccer team. Off the field, he loves spending time with friends, family and his dogs.",
       focus: ["Created the Mindset clinic and its five rules", "Plans each event and builds partnerships", "Plays center midfield: the playmaker"]
     },
@@ -183,6 +183,16 @@ document.addEventListener("click", async e => {
 });
 
 $("#year").textContent = new Date().getFullYear();
+
+// "Share" opens the phone's share sheet (Messages, Instagram DMs…), or copies the link
+const SITE_URL = "https://seb-stek.github.io/mindset-in-motion/";
+document.addEventListener("click", async e => {
+  if (!e.target.closest(".share-btn")) return;
+  const data = { title: "Mindset in Motion", text: "Free sports clinics for kids ages 8 to 12. Play better, live better.", url: SITE_URL };
+  if (navigator.share) { try { await navigator.share(data); } catch {} return; }
+  try { await navigator.clipboard.writeText(SITE_URL); toast("Link copied. Paste it anywhere to share!"); }
+  catch { toast(SITE_URL); }
+});
 
 /* ---------- Photos (with a placeholder until the real file exists) ---------- */
 function placeholder() {
@@ -543,6 +553,8 @@ function openLB(i, fromEl, list) {
   lb.hidden = false;
   void lb.offsetWidth;
   lb.classList.add("open");
+  // A history entry, so the phone's Back button closes the viewer instead of leaving the page
+  if (!history.state?.lb) history.pushState({ lb: true }, "");
   const img = showPhoto(i);
   $(".lb-close").focus({ preventScroll: true });
   if (img.tagName === "DIV") return;
@@ -559,9 +571,10 @@ function openLB(i, fromEl, list) {
   };
   img.complete ? zoom() : img.addEventListener("load", zoom, { once: true });
 }
-function closeLB() {
+function closeLB(fromBack = false) {
   if (!lbOpen) return;
   lbOpen = false;
+  if (!fromBack && history.state?.lb) history.back();
   stopVideo();
   lb.classList.remove("open");
   const img = $("img, video", lbMedia);
@@ -577,7 +590,9 @@ function stepLB(dir) {
   const pos = lbList.indexOf(lbIndex);
   showPhoto(lbList[(pos + dir + lbList.length) % lbList.length], dir);
 }
-$(".lb-close").onclick = closeLB;
+$(".lb-close").onclick = () => closeLB();
+addEventListener("popstate", () => closeLB(true));
+if (history.state?.lb) history.replaceState(null, ""); // reloaded with the viewer open
 $(".lb-prev").onclick = () => stepLB(-1);
 $(".lb-next").onclick = () => stepLB(1);
 lb.addEventListener("click", e => { if (e.target === lb || e.target.tagName === "FIGURE") closeLB(); });
@@ -692,7 +707,9 @@ const people = $("#people");
 if (people) {
   people.innerHTML = CONFIG.team.map(m => `
     <article class="person">
-      <div class="person-art">${m.photo ? `<img src="${esc(m.photo)}" alt="${esc(m.name)}" loading="lazy">` : `<span class="jersey-num" aria-hidden="true">${esc(m.number ?? "")}</span>`}</div>
+      <div class="person-art ${m.photo ? "has-photo" : ""}">${m.photo
+        ? `<img src="${esc(m.photo)}" alt="${esc(m.name)}" loading="lazy"><span class="person-num" aria-hidden="true">${esc(m.number ?? "")}</span>`
+        : `<span class="jersey-num" aria-hidden="true">${esc(m.number ?? "")}</span>`}</div>
       <div class="person-body">
         <h3>${esc(m.name)}</h3>
         <span class="person-role">${esc(m.role)}</span>

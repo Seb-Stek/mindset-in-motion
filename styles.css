@@ -343,6 +343,11 @@ h3 { font-weight: 700; font-size: 1.3rem; line-height: 1.2; margin-bottom: .35re
 .person:hover::after { opacity: 1; }
 .person-art { display: grid; place-items: center; background: var(--green); overflow: hidden; }
 .person-art img { width: 100%; height: 100%; object-fit: cover; }
+/* Headshots are small, so they show as a round portrait at close to their real size instead of being stretched */
+.person-art.has-photo { position: relative; }
+.person-art.has-photo img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; object-position: 50% 30%; box-shadow: 0 0 0 4px var(--sun), 0 12px 24px -10px rgba(0,0,0,.5); transition: transform .6s var(--spring); }
+.person:hover .person-art.has-photo img { transform: scale(1.05) rotate(-2deg); }
+.person-num { position: absolute; left: calc(50% + 42px); top: calc(50% + 40px); display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--clay); color: #fff; font: 800 1.3rem var(--display); box-shadow: 0 0 0 3px var(--green); }
 .jersey-num { font: 800 9rem/1 var(--display); color: transparent; -webkit-text-stroke: 3px rgba(240,180,60,.55); transition: transform .6s var(--spring), -webkit-text-stroke-color .4s; }
 .person:hover .jersey-num { transform: scale(1.1) rotate(-4deg); -webkit-text-stroke-color: rgba(240,180,60,.95); }
 .person-body { padding: 1.8rem 2rem 2rem; }
@@ -357,7 +362,7 @@ h3 { font-weight: 700; font-size: 1.3rem; line-height: 1.2; margin-bottom: .35re
 .person-join .person-art { background: var(--sand-deep); }
 .person-join .jersey-num { -webkit-text-stroke-color: rgba(29,77,54,.35); }
 .person-join:hover { border-color: var(--clay); background: var(--white); }
-@media (max-width: 640px) { .person, .person-join { grid-template-columns: 1fr; } .person-art { height: 150px; } }
+@media (max-width: 640px) { .person, .person-join { grid-template-columns: 1fr; } .person-art { height: 150px; } .person-art.has-photo { height: 190px; } .person-art.has-photo img { width: 136px; height: 136px; } }
 
 /* Shared page parts */
 .kicker { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--sun); margin-bottom: .8rem; animation: fade-up .8s var(--ease) backwards; }
@@ -647,3 +652,25 @@ h3 { font-weight: 700; font-size: 1.3rem; line-height: 1.2; margin-bottom: .35re
 .footer-ig svg .dot { fill: currentColor; stroke: none; }
 .footer-ig:hover { color: var(--sun); }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+/* Phone polish: most visitors arrive from the Instagram bio on a phone */
+.form input, .form textarea, .form select { min-width: 0; width: 100%; font-size: max(16px, 1rem); } /* 16px+ stops iPhones zooming in on tap */
+.share-btn { display: inline-flex; align-items: center; gap: .45rem; margin-top: .55rem; padding: .5rem .9rem; font: 600 .92rem var(--body); color: #fff; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.3); border-radius: 8px; cursor: pointer; transition: background .2s, color .2s; }
+.share-btn:hover { background: var(--sun); color: var(--green-deep); border-color: var(--sun); }
+.share-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 900px) { .contact-wrap { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 860px) {
+  .hero-media { height: clamp(170px, 26vh, 240px); }
+  .hero-copy { padding: 28px 16px 44px; }
+  .hero-copy p { margin: .9rem 0 1.4rem; }
+}
+@media (max-width: 640px) {
+  .form { padding: 1.4rem 1.1rem; }
+  .form-row { grid-template-columns: minmax(0, 1fr); }
+  .footer-links { gap: 0 1.5rem; }
+  .footer-links a, .footer-ig, .footer-mail { display: inline-flex; align-items: center; min-height: 44px; }
+  .footer-ig { margin-top: 0; }
+  .see-all, .ev-link, .partner-link { display: inline-flex; align-items: center; min-height: 44px; }
+  .to-top { right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); }
+  .footer-copy { padding-bottom: 72px; }
+}
