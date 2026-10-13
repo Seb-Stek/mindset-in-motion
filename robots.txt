@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://seb-stek.github.io/mindset-in-motion/sitemap.xml

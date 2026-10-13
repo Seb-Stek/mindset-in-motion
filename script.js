@@ -20,10 +20,10 @@ const CONFIG = {
     },
     {
       name: "Boris",
-      role: "Co-Founder",
+      role: "Vice President",
       number: 2,
       photo: "",                 // e.g. "photos/boris.jpg"
-      bio: "Boris plays on the high school soccer team with Sebastian and helped launch Mindset in Motion from day one. On the field he plays left wing, where his job is to create chances for the attackers and goal scorers.",
+      bio: "Boris plays on the high school soccer team with Sebastian. He first joined Mindset in Motion as a volunteer coach at one of our early events and is now vice president, helping Sebastian run each clinic. On the field he plays left wing, where his job is to create chances for the attackers and goal scorers.",
       focus: ["Coaches drills and skills groups", "Keeps the games competitive", "Plays left wing: creates chances"]
     }
   ],
@@ -48,10 +48,10 @@ const CONFIG = {
       date: "Aug 17, 2026",
       cover: "photos/event2-demo.jpg",
       partner: "Boys & Girls Clubs of Union County",
-      place: "Russell Triolo Clubhouse gym",
+      place: "Inside the Boys & Girls Club gym",
       length: "About an hour",
       status: "done",
-      summary: "We came back to the Boys & Girls Clubs of Union County for round two, this time inside the gym at the Russell Triolo Clubhouse.",
+      summary: "We came back to the Boys & Girls Clubs of Union County for round two, this time inside their gym.",
       highlights: ["Indoor soccer in the clubhouse gym", "Dribbling drills around cones", "Shooting on goal and small-sided scrimmages"]
     },
     {
@@ -83,7 +83,7 @@ const CONFIG = {
     { src: "photos/event2-demo.jpg",      caption: "Showing the drill",                 event: "event2", sport: "soccer", layout: "wide" },
     { src: "photos/event2-rules.jpg",     caption: "Going over the game",               event: "event2", sport: "soccer", layout: "tall" },
     { src: "photos/event2-gym-games.jpg", video: "photos/event2-gym-games.mp4", caption: "Games all over the gym", event: "event2", sport: "soccer", layout: "tall" },
-    { src: "photos/event2-arrival.jpg",   caption: "Gear in hand at the clubhouse",     event: "event2", sport: "soccer", layout: "tall" },
+    { src: "photos/event2-arrival.jpg",   caption: "Gear in hand at the Boys & Girls Club", event: "event2", sport: "soccer", layout: "tall" },
     { src: "photos/event2-drill.jpg",     video: "photos/event2-drill.mp4",     caption: "Racing to goal",         event: "event2", sport: "soccer", layout: "tall" },
     { src: "photos/event2-huddle.jpg",    caption: "Questions before kickoff",          event: "event2", sport: "soccer", layout: "tall" },
     { src: "photos/event2-team-talk.jpg", video: "photos/event2-team-talk.mp4", caption: "Team talk",              event: "event2", sport: "soccer", layout: "tall" },
@@ -789,17 +789,38 @@ if (form) {
       status.textContent = "Our contact form isn't connected yet. Check back soon!";
       return;
     }
+    if (data._honey) return; // a bot filled the hidden field
     submitBtn.classList.add("sending");
-    submitBtn.firstChild.textContent = "Opening your email… ";
-    await wait(450);
+    submitBtn.disabled = true;
+    submitBtn.firstChild.textContent = "Sending… ";
     const signup = data.type === "Sign up";
     const sportName = CONFIG.sports.find(s => s.key === data.sport)?.name || "";
     const subject = signup ? `Mindset in Motion: ${sportName} sign-up from ${data.name}` : `Mindset in Motion: ${data.type} inquiry from ${data.name}`;
     const body = `Name: ${data.name}\nEmail: ${data.email}\n${signup ? `Sport: ${sportName}\n` : ""}${data.type === "Partner" && data.org ? `Organization: ${data.org}\n` : ""}\n${data.message}`;
-    location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // Send straight to our inbox through FormSubmit. If that fails, fall back to the visitor's email app.
+    let sent = false;
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${CONFIG.contactEmail}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject: subject, _template: "table", _replyto: data.email,
+          "Contact about": data.type, Name: data.name, Email: data.email,
+          ...(signup ? { Sport: sportName } : {}),
+          ...(data.type === "Partner" && data.org ? { Organization: data.org } : {}),
+          Message: data.message || "(no message)"
+        })
+      });
+      sent = res.ok && String((await res.json()).success) === "true";
+    } catch { sent = false; }
+    if (!sent) location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     submitBtn.classList.remove("sending");
+    submitBtn.disabled = false;
     submitBtn.firstChild.textContent = "Send message ";
-    $("#doneTitle").textContent = `Almost there, ${data.name.trim().split(" ")[0]}`;
+    const first = data.name.trim().split(" ")[0];
+    $("#doneTitle").textContent = sent ? `Thanks, ${first}!` : `Almost there, ${first}`;
+    $("#doneMsg").textContent = sent ? "Your message is on its way. We'll write back to you soon." : "Your email app should have opened with your message ready to go. Just hit send.";
+    $(".done-fallback", formDone).hidden = sent;
     formDone.hidden = false;
     form.classList.add("is-done");
     setTimeout(() => confetti(...centerOf($(".check", formDone)), 26, .9), 650);
