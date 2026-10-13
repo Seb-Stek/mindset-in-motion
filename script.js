@@ -8,23 +8,23 @@ const CONFIG = {
   // Where the contact form sends messages (opens the visitor's email app).
   contactEmail: "mindsetinmotionkids@gmail.com",
 
-  // Shown on the About us page. focus: what each person does on game day.
+  // Shown on the About us page. focus: what each person does, on the field and at clinics.
   team: [
     {
       name: "Sebastian Steketee",
       role: "Founder & Lead",
       number: 1,
       photo: "",                 // e.g. "photos/sebastian.jpg"
-      bio: "Started Mindset in Motion in the summer of 2026 to bring free, high-energy sports events to kids who don't always get the chance to play.",
-      focus: ["Plans each event", "Builds partnerships with community organizations", "Runs the show on game day"]
+      bio: "Sebastian plays tennis and soccer at Ridgewood High School in New Jersey, and he's passionate about the mindset behind both. As a freshman he was a varsity starter on the tennis team with an 18-2 record, was nominated for the All-County Second Team, and captained the freshman soccer team. Off the field, he loves spending time with friends, family and his dogs.",
+      focus: ["Created the Mindset clinic and its five rules", "Plans each event and builds partnerships", "Plays center midfield: the playmaker"]
     },
     {
       name: "Boris",
       role: "Co-Founder",
       number: 2,
       photo: "",                 // e.g. "photos/boris.jpg"
-      bio: "Helped launch Mindset in Motion from day one and has been at every event since.",
-      focus: ["Runs drills and skills groups", "Keeps the races competitive", "Makes sure every kid gets in on the action"]
+      bio: "Boris plays on the high school soccer team with Sebastian and helped launch Mindset in Motion from day one. On the field he plays left wing, where his job is to create chances for the attackers and goal scorers.",
+      focus: ["Coaches drills and skills groups", "Keeps the games competitive", "Plays left wing: creates chances"]
     }
   ],
 
@@ -96,11 +96,11 @@ const CONFIG = {
   // Optional: signup: ["step 1", "step 2", ...] to replace the default steps.
   sports: [
     { key: "soccer",     name: "Soccer",     status: "now",
-      about: "Games, lessons and races. Every kid gets touches on the ball, whether it's their first time or they've played for years." },
+      about: "Ball control, dribbling, passing, shooting and field positioning, with hands-on coaching, a fun game, and a mindset talk to finish." },
     { key: "basketball", name: "Basketball", status: "soon",
       about: "We haven't run a basketball event yet, but it's high on our list." },
     { key: "tennis",     name: "Tennis",     status: "soon",
-      about: "We haven't run a tennis event yet, but we'd love to bring it to more kids." },
+      about: "Our tennis clinic will cover racket grip, stroke technique, footwork and court positioning, plus the same mindset talk at the end." },
     { key: "volleyball", name: "Volleyball", status: "soon",
       about: "We haven't run a volleyball event yet, but it's on the way." }
   ]
@@ -241,7 +241,6 @@ const progress = $(".progress");
 const toTop = $("#toTop");
 const heroMedia = $(".hero-media");
 const heroImg = $(".hero-img");
-const crestBall = $(".crest-ball");
 let lastY = scrollY, scrollQueued = false;
 function onScroll() {
   scrollQueued = false;
@@ -260,7 +259,6 @@ function onScroll() {
       const h = heroMedia.offsetHeight;
       if (y < h + 200) heroImg.style.setProperty("--py", `${Math.min(y * .1, h * .05)}px`);
     }
-    crestBall.style.transform = `rotate(${y * .3}deg)`;
   }
 }
 addEventListener("scroll", () => { if (!scrollQueued) { scrollQueued = true; requestAnimationFrame(onScroll); } }, { passive: true });
@@ -699,7 +697,7 @@ if (people) {
         <h3>${esc(m.name)}</h3>
         <span class="person-role">${esc(m.role)}</span>
         <p>${esc(m.bio)}</p>
-        ${m.focus?.length ? `<h4>On game day</h4><ul class="ev-highlights">${m.focus.map(f => `<li>${esc(f)}</li>`).join("")}</ul>` : ""}
+        ${m.focus?.length ? `<h4>On the field and at clinics</h4><ul class="ev-highlights">${m.focus.map(f => `<li>${esc(f)}</li>`).join("")}</ul>` : ""}
       </div>
     </article>`).join("") + `
     <a class="person person-join" href="get-involved.html?type=Volunteer">
@@ -845,7 +843,7 @@ $$(".faq details").forEach(d => {
 $$("main h2").forEach(splitWords);
 reveal("main h2");
 reveal(".section .lead, .intro .narrow p:not(.lead), .story-text p, .split-copy > :not(h2), .cta-inner > *, .more-link");
-reveal(".tile, .pillar, .steps li, .ev-card, .event-feature, .upnext, .gallery-head > *, .g-item, .partner-inner > *, .sport, .sport-panel, .person, .feature, .timeline li, .split-media, .photo-strip, .way, .form, .contact-aside, .faq details, .footer-inner > *");
+reveal(".rule, .rules-mini li, .quote, .tile, .pillar, .steps li, .ev-card, .event-feature, .upnext, .gallery-head > *, .g-item, .partner-inner > *, .sport, .sport-panel, .person, .feature, .timeline li, .split-media, .photo-strip, .way, .form, .contact-aside, .faq details, .footer-inner > *");
 reveal(".impact-stats > div", (el, d) => $$("[data-count]", el).forEach(n => roll(n, d)));
 
 const relayout = () => { moveIndicator(); movePill(); fillGaps(); };

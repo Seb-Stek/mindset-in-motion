@@ -83,9 +83,8 @@ h3 { font-weight: 700; font-size: 1.3rem; line-height: 1.2; margin-bottom: .35re
 .nav.tucked { transform: translateY(-100%); box-shadow: none; }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 76px; }
 .logo { display: flex; align-items: center; gap: .7rem; text-decoration: none; }
-.crest { width: 54px; height: 54px; font-family: var(--body); transition: transform .5s var(--spring); }
+.crest { width: 54px; height: 54px; border-radius: 50%; transition: transform .5s var(--spring); }
 .logo:hover .crest { transform: rotate(-8deg) scale(1.05); }
-.crest-ball { transform-box: fill-box; transform-origin: center; }
 .logo-text { font: 800 1.4rem var(--display); text-transform: uppercase; color: var(--green); letter-spacing: .01em; }
 .nav-links { position: relative; display: flex; align-items: center; gap: 1.8rem; }
 .nav-links a:not(.btn) { position: relative; text-decoration: none; font-weight: 600; font-size: .98rem; color: var(--ink); padding: .3rem 0; transition: color .2s; }
@@ -337,26 +336,28 @@ h3 { font-weight: 700; font-size: 1.3rem; line-height: 1.2; margin-bottom: .35re
 @media (max-width: 520px) { .sp-grid { grid-auto-rows: 90px; } }
 
 /* People (About page) */
-.people { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
-.person { position: relative; display: grid; grid-template-columns: 150px minmax(0, 1fr); background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); text-decoration: none; color: inherit; transition: transform .45s var(--ease), box-shadow .45s; }
+.people { display: grid; gap: 1.5rem; margin: 2.5rem auto 0; max-width: 980px; }
+.person { position: relative; display: grid; grid-template-columns: 220px minmax(0, 1fr); background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); text-decoration: none; color: inherit; transition: transform .45s var(--ease), box-shadow .45s; }
 .person:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
 .person::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at var(--mx, 50%) var(--my, 30%), rgba(240,180,60,.12), transparent 45%); opacity: 0; transition: opacity .3s; pointer-events: none; }
 .person:hover::after { opacity: 1; }
 .person-art { display: grid; place-items: center; background: var(--green); overflow: hidden; }
 .person-art img { width: 100%; height: 100%; object-fit: cover; }
-.jersey-num { font: 800 7.5rem/1 var(--display); color: transparent; -webkit-text-stroke: 3px rgba(240,180,60,.55); transition: transform .6s var(--spring), -webkit-text-stroke-color .4s; }
+.jersey-num { font: 800 9rem/1 var(--display); color: transparent; -webkit-text-stroke: 3px rgba(240,180,60,.55); transition: transform .6s var(--spring), -webkit-text-stroke-color .4s; }
 .person:hover .jersey-num { transform: scale(1.1) rotate(-4deg); -webkit-text-stroke-color: rgba(240,180,60,.95); }
-.person-body { padding: 1.5rem 1.6rem 1.6rem; }
+.person-body { padding: 1.8rem 2rem 2rem; }
+.person-body .ev-highlights { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); column-gap: 1.5rem; }
 .person-body h3 { color: var(--green); font-size: 1.45rem; margin: 0; }
 .person-role { display: inline-block; color: var(--clay); font-weight: 700; font-size: .95rem; margin-bottom: .6rem; }
 .person-body p { color: var(--muted); margin-bottom: .8rem; }
 .person-body h4, .ef-body h4 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--green); margin-bottom: .5rem; }
 .person-body .ev-highlights { margin: 0; }
-.person-join { border: 2px dashed var(--sand-deep); box-shadow: none; background: transparent; }
+.person-join { border: 2px dashed var(--sand-deep); box-shadow: none; background: transparent; grid-template-columns: 140px minmax(0, 1fr); }
+.person-join .jersey-num { font-size: 6rem; }
 .person-join .person-art { background: var(--sand-deep); }
 .person-join .jersey-num { -webkit-text-stroke-color: rgba(29,77,54,.35); }
 .person-join:hover { border-color: var(--clay); background: var(--white); }
-@media (max-width: 520px) { .person { grid-template-columns: 1fr; } .person-art { height: 150px; } }
+@media (max-width: 640px) { .person, .person-join { grid-template-columns: 1fr; } .person-art { height: 150px; } }
 
 /* Shared page parts */
 .kicker { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--sun); margin-bottom: .8rem; animation: fade-up .8s var(--ease) backwards; }
@@ -599,6 +600,43 @@ h3 { font-weight: 700; font-size: 1.3rem; line-height: 1.2; margin-bottom: .35re
   ::view-transition-new(root) { animation-name: fade-in; }
   .timeline li.in::before { animation: none; }
 }
+
+/* Logo in the footer */
+.footer-logo { display: block; width: 76px; height: 76px; margin-bottom: .9rem; transition: transform .6s var(--spring); }
+.footer-logo:hover { transform: rotate(-10deg) scale(1.05); }
+
+/* Five things to always remember: short version (Home) */
+.rules-mini { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-top: 2.5rem; }
+.rules-mini li { background: var(--white); border-radius: var(--radius); padding: 1.4rem 1rem; text-align: center; box-shadow: var(--shadow); display: grid; justify-items: center; gap: .2rem; transition: transform .4s var(--ease), box-shadow .4s; }
+.rules-mini li:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
+.rules-mini strong { font: 800 1.6rem/1.05 var(--display); text-transform: uppercase; color: var(--green); margin-top: .5rem; }
+.rules-mini li > span:last-child { font-size: .88rem; color: var(--muted); }
+.rule-n { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--green); color: var(--sun); font: 800 1.3rem var(--display); }
+.rules-mini li.in .rule-n, .rule.in .rule-n { animation: pop-in .6s var(--spring) calc(var(--d, 0s) + .2s) backwards; }
+@media (max-width: 900px) { .rules-mini { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 560px) { .rules-mini { grid-template-columns: 1fr 1fr; } .rules-mini li:last-child { grid-column: span 2; } }
+
+/* Five things to always remember: full version (About) */
+.rules { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; margin-top: 2.5rem; }
+.rule { position: relative; flex: 1 1 300px; max-width: 370px; background: var(--white); border-radius: var(--radius); padding: 1.8rem 1.6rem 1.6rem; box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform .4s var(--ease), box-shadow .4s; }
+.rule:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
+.rule h3 { font: 800 2rem/1 var(--display); text-transform: uppercase; color: var(--green); margin: 1rem 0 .2rem; }
+.rule-formal { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--clay); margin-bottom: .8rem; }
+.rule p { color: var(--muted); }
+.rule .rule-take { margin-top: auto; padding-top: 1rem; }
+.rule-take { background: var(--cream); border-radius: 10px; padding: .8rem 1rem !important; margin-top: 1rem !important; color: var(--ink) !important; font-size: .95rem; }
+.rule-take strong { color: var(--green); }
+
+/* Quote under the team */
+.quote { max-width: 760px; margin: 3rem auto 0; text-align: center; }
+.quote blockquote { font: 600 clamp(1.25rem, 2.4vw, 1.6rem)/1.35 var(--heading); color: var(--green); position: relative; }
+.quote blockquote::before { content: "“"; display: block; font: 800 4.5rem/.6 var(--display); color: var(--clay); margin-bottom: .6rem; }
+.quote figcaption { margin-top: 1rem; font-weight: 700; color: var(--clay); text-transform: uppercase; letter-spacing: .08em; font-size: .85rem; }
+
+/* Clinic steps: three 20-minute parts */
+.steps.steps-3 { grid-template-columns: repeat(3, 1fr); }
+.step-time { display: block; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--clay); margin-bottom: .2rem; }
+@media (max-width: 900px) { .steps.steps-3 { grid-template-columns: 1fr; } }
 
 /* Clay is slightly too light for small text on sand, so links there use the deeper clay */
 .section-sand .see-all, .section-sand .ev-link, .section-sand .faq a, .section-sand .timeline a, .section-sand .tile-more { color: var(--clay-deep); }
