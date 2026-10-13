@@ -674,3 +674,6 @@ h3 { font-weight: 700; font-size: 1.3rem; line-height: 1.2; margin-bottom: .35re
   .to-top { right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); }
   .footer-copy { padding-bottom: 72px; }
 }
+.done-follow { font-size: .95em; }
+.done-follow a { color: var(--clay); font-weight: 700; }
+.logo-text { white-space: nowrap; font-size: min(1.4rem, 6vw); }

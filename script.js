@@ -12,10 +12,10 @@ const CONFIG = {
   team: [
     {
       name: "Sebastian Steketee",
-      role: "Founder & Lead",
+      role: "Founder & President",
       number: 1,
       photo: "photos/team-sebastian.jpg",
-      bio: "Sebastian plays tennis and soccer at Ridgewood High School in New Jersey, and he's passionate about the mindset behind both. As a freshman he was a varsity starter on the tennis team with an 18-2 record, was nominated for the All-County Second Team, and captained the freshman soccer team. Off the field, he loves spending time with friends, family and his dogs.",
+      bio: "Sebastian is a sophomore at Ridgewood High School in New Jersey who plays tennis and soccer, and he's passionate about the mindset behind both. As a freshman he was a varsity starter on the tennis team with an 18-2 record, was nominated for the All-County Second Team, and captained the freshman soccer team. Off the field, he loves spending time with friends, family and his dogs.",
       focus: ["Created the Mindset clinic and its five rules", "Plans each event and builds partnerships", "Plays center midfield: the playmaker"]
     },
     {
@@ -52,7 +52,7 @@ const CONFIG = {
       length: "About an hour",
       status: "done",
       summary: "We came back to the Boys & Girls Clubs of Union County for round two, this time inside their gym.",
-      highlights: ["Indoor soccer in the clubhouse gym", "Dribbling drills around cones", "Shooting on goal and small-sided scrimmages"]
+      highlights: ["Indoor soccer in the gym", "Dribbling drills around cones", "Shooting on goal and small-sided scrimmages"]
     },
     {
       id: "next",
@@ -77,7 +77,7 @@ const CONFIG = {
     { src: "photos/huddle.jpg",      caption: "Huddle up: hands up if you're ready",  event: "event1", sport: "soccer", layout: "wide" },
     { src: "photos/pinnies.jpg",     caption: "Picking teams",                        event: "event1", sport: "soccer", layout: "tall" },
 
-    // Event #2 (inside the clubhouse gym)
+    // Event #2 (inside the Boys & Girls Club gym)
     { src: "photos/event2-scrimmage.jpg", caption: "Scrimmage in the gym",              event: "event2", sport: "soccer", layout: "tall" },
     { src: "photos/event2-in-goal.jpg",   video: "photos/event2-in-goal.mp4",   caption: "Shooting on goal",       event: "event2", sport: "soccer", layout: "tall" },
     { src: "photos/event2-demo.jpg",      caption: "Showing the drill",                 event: "event2", sport: "soccer", layout: "wide" },
@@ -737,7 +737,7 @@ if (people) {
 
 /* ---------- Get involved: form ---------- */
 const form = $("#contactForm");
-let chooseWay = () => {};
+let chooseWay = () => {}, clearDraft = () => {};
 if (form) {
   const formDone = $("#formDone");
   const submitBtn = $('button[type="submit"]', form);
@@ -830,6 +830,7 @@ if (form) {
       });
       sent = res.ok && String((await res.json()).success) === "true";
     } catch { sent = false; }
+    if (sent) clearDraft();
     if (!sent) location.href = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     submitBtn.classList.remove("sending");
     submitBtn.disabled = false;
@@ -842,6 +843,17 @@ if (form) {
     form.classList.add("is-done");
     setTimeout(() => confetti(...centerOf($(".check", formDone)), 26, .9), 650);
   });
+  // Keep a draft, so switching away from Instagram mid-message doesn't lose it
+  const DRAFT = "mim-form-draft", draftFields = ["name", "email", "message", "org"];
+  try {
+    const d = JSON.parse(localStorage.getItem(DRAFT) || "{}");
+    draftFields.forEach(n => { if (d[n] && !form.elements[n].value) form.elements[n].value = d[n]; });
+  } catch {}
+  form.addEventListener("input", () => {
+    try { localStorage.setItem(DRAFT, JSON.stringify(Object.fromEntries(draftFields.map(n => [n, form.elements[n].value])))); } catch {}
+  });
+  clearDraft = () => { try { localStorage.removeItem(DRAFT); } catch {} };
+
   $("#formAgain").addEventListener("click", () => {
     form.reset();
     $$(".valid, .invalid", form).forEach(el => el.classList.remove("valid", "invalid"));
