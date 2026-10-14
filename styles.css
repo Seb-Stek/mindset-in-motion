@@ -527,7 +527,18 @@ h3 { font-weight: 700; font-size: 1.3rem; line-height: 1.2; margin-bottom: .35re
 .form .valid { border-color: #6f9b80; }
 .form > .btn { justify-self: start; }
 .form .btn.sending { pointer-events: none; opacity: .8; }
+.form-note { font-size: .88rem; color: var(--muted); margin-top: -.4rem; }
+.form-note a { color: var(--green); font-weight: 600; }
 .form-status { font-weight: 600; min-height: 1.4em; }
+
+/* Privacy page */
+.policy h2 { font-size: clamp(1.5rem, 3vw, 1.9rem); margin: 2.4rem 0 .6rem; }
+.policy h2:first-of-type { margin-top: 1rem; }
+.policy p, .policy li { color: var(--muted); margin-bottom: 1rem; }
+.policy a { color: var(--clay-deep); font-weight: 600; overflow-wrap: anywhere; }
+.policy strong { color: var(--ink); }
+.policy-date { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--clay); }
+.policy-list { padding-left: 1.2rem; }
 .form-status.ok { color: var(--green); }
 .form-status.err { color: var(--clay); }
 .form.is-done > :not(.form-done) { visibility: hidden; }

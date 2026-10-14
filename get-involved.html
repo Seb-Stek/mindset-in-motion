@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; media-src 'self'; connect-src https://formsubmit.co; form-action 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Get involved | Mindset in Motion</title>
   <meta name="description" content="Sign up to play, volunteer, partner with us or donate gear.">
@@ -94,13 +96,14 @@
           <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
           <p class="form-title">Contact us about: <strong id="formTypeLabel">Volunteer</strong></p>
           <div class="form-row">
-            <label>Name<input name="name" required autocomplete="name"></label>
-            <label>Email<input name="email" type="email" required autocomplete="email"></label>
+            <label>Name<input name="name" required autocomplete="name" maxlength="100"></label>
+            <label>Email<input name="email" type="email" required autocomplete="email" maxlength="254"></label>
           </div>
           <label id="sportLabel" hidden>Sport<select name="sport" id="sportField"></select></label>
-          <label id="orgLabel" hidden>Organization<input name="org"></label>
-          <label>Message<textarea name="message" rows="5" placeholder="Tell us a little about yourself and when you're free…" id="msgField"></textarea></label>
+          <label id="orgLabel" hidden>Organization<input name="org" maxlength="150"></label>
+          <label>Message<textarea name="message" rows="5" maxlength="3000" placeholder="Tell us a little about yourself and when you're free…" id="msgField"></textarea></label>
           <button class="btn btn-clay" type="submit">Send message <span class="arr" aria-hidden="true">→</span></button>
+          <p class="form-note">Under 13? Ask a parent or guardian to send this for you. We only use what you send to reply. <a href="privacy.html">Privacy</a></p>
           <p class="form-status" id="formStatus" role="status"></p>
           <div class="form-done" id="formDone" hidden>
             <svg class="check" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23"/><path d="M15 27.5l7.5 7.5L38 19"/></svg>
@@ -169,6 +172,7 @@
       <a href="photos.html">Photos</a>
       <a href="sports.html">Sports</a>
       <a href="get-involved.html">Get involved</a>
+      <a href="privacy.html">Privacy</a>
     </nav>
   </div>
   <div class="wrap footer-copy">&copy; <span id="year"></span> Mindset in Motion. Proud partner of the Boys &amp; Girls Clubs of Union County.</div>
