@@ -16,15 +16,23 @@ const CONFIG = {
       number: 1,
       photo: "photos/team-sebastian.jpg",
       bio: "Sebastian is a sophomore at Ridgewood High School in New Jersey who plays tennis and soccer, and he's passionate about the mindset behind both. As a freshman he was a varsity starter on the tennis team with an 18-2 record, was nominated for the All-County Second Team, and captained the freshman soccer team. Off the field, he loves spending time with friends, family and his dogs.",
-      focus: ["Created the Mindset clinic and its five rules", "Plans each event and builds partnerships", "Plays center midfield: the playmaker"]
+      focus: ["Plans events and builds partnerships", "Leads the mindset talk at clinics", "Plays center midfield: the playmaker"]
     },
     {
       name: "Boris",
       role: "Vice President",
       number: 2,
       photo: "",                 // e.g. "photos/boris.jpg"
-      bio: "Boris plays on the high school soccer team with Sebastian. He first joined Mindset in Motion as a volunteer coach at one of our early events and is now vice president, helping Sebastian run each clinic. On the field he plays left wing, where his job is to create chances for the attackers and goal scorers.",
+      bio: "Boris plays on the high school soccer team with Sebastian. At our clinics he coaches drills and keeps the games competitive. On the field he plays left wing, where his job is to create chances for the attackers and goal scorers.",
       focus: ["Coaches drills and skills groups", "Keeps the games competitive", "Plays left wing: creates chances"]
+    },
+    {
+      name: "Vaughn Echikson",
+      role: "Director of Operations",
+      number: 3,
+      photo: "",                 // e.g. "photos/vaughn.jpg"
+      bio: "Vaughn plays on the high school soccer team with Sebastian and Boris, and he makes sure every event runs smoothly. He helps set up the gear and stations before the kids arrive, works with players during drills and games, and keeps each part of the clinic on schedule.",
+      focus: ["Sets up gear and stations", "Helps coach drills and games", "Keeps every clinic on schedule"]
     }
   ],
 
@@ -235,14 +243,13 @@ document.addEventListener("click", e => {
   openLB(+t.dataset.index, t, list);
 });
 
-/* ---------- Nav: menu, scroll progress, hide on scroll down ---------- */
+/* ---------- Nav: menu and scroll progress (the bar always stays on screen) ---------- */
 const nav = $(".nav");
 const toggle = $(".nav-toggle");
 function setMenu(open) {
   nav.classList.toggle("open", open);
   toggle.setAttribute("aria-expanded", open);
   toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-  if (open) nav.classList.remove("tucked");
 }
 toggle.addEventListener("click", () => setMenu(!nav.classList.contains("open")));
 document.addEventListener("click", e => { if (nav.classList.contains("open") && !nav.contains(e.target)) setMenu(false); });
@@ -251,17 +258,13 @@ const progress = $(".progress");
 const toTop = $("#toTop");
 const heroMedia = $(".hero-media");
 const heroImg = $(".hero-img");
-let lastY = scrollY, scrollQueued = false;
+let scrollQueued = false;
 function onScroll() {
   scrollQueued = false;
   const y = scrollY;
   const max = document.documentElement.scrollHeight - innerHeight;
   progress.style.transform = `scaleX(${max > 0 ? Math.min(y / max, 1) : 0})`;
   nav.classList.toggle("scrolled", y > 8);
-  if (Math.abs(y - lastY) > 6) {
-    if (!nav.classList.contains("open")) nav.classList.toggle("tucked", y > lastY && y > 560);
-    lastY = y;
-  }
   toTop.classList.toggle("show", y > 900);
   if (pending.size) revealPassed();
   if (!reduced) {

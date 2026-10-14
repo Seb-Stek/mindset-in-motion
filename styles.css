@@ -80,7 +80,6 @@ h3 { font-weight: 700; font-size: 1.3rem; line-height: 1.2; margin-bottom: .35re
 /* Nav */
 .nav { position: sticky; top: 0; z-index: 50; background: var(--white); box-shadow: 0 1px 0 var(--line); transition: transform .4s var(--ease), box-shadow .3s; }
 .nav.scrolled { box-shadow: 0 1px 0 var(--line), 0 10px 30px -18px rgba(20,56,39,.35); }
-.nav.tucked { transform: translateY(-100%); box-shadow: none; }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 76px; }
 .logo { display: flex; align-items: center; gap: .7rem; text-decoration: none; }
 .crest { width: 54px; height: 54px; border-radius: 50%; transition: transform .5s var(--spring); }
