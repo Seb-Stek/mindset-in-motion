@@ -19,7 +19,7 @@ const CONFIG = {
       focus: ["Plans events and builds partnerships", "Leads the mindset talk at clinics", "Plays center midfield: the playmaker"]
     },
     {
-      name: "Boris",
+      name: "Boris Flowers",
       role: "Vice President",
       number: 2,
       photo: "",                 // e.g. "photos/boris.jpg"
