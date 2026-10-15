@@ -11,9 +11,12 @@ The website for **Mindset in Motion**, a youth-led nonprofit that runs free socc
 - `get-involved.html`: Sign up, volunteer, partner, donate gear, contact form and FAQ
 
 ## Live site
-https://seb-stek.github.io/mindset-in-motion/ (this is the link in the Instagram bio, @mindsetinmotionkids)
+https://mindsetinmotionkids.org (this is the link in the Instagram bio, @mindsetinmotionkids)
 
-It's hosted free on GitHub Pages. Any change pushed to the `main` branch goes live on its own within a minute or two.
+It's hosted free on GitHub Pages. Any change pushed to the `main` branch goes live on its own within a minute or two. The old address, https://seb-stek.github.io/mindset-in-motion/, redirects to the new one.
+
+## Domain
+`mindsetinmotionkids.org` is registered with Cloudflare Registrar (renews yearly, keep auto-renew on). The `CNAME` file tells GitHub Pages to use it, so don't delete it. Cloudflare DNS has four `A` records for `@` (`185.199.108.153`, `.109.153`, `.110.153`, `.111.153`) and a `CNAME` for `www` pointing to `seb-stek.github.io`, all set to "DNS only" (grey cloud).
 
 ## Run it
 Open `index.html` in a browser. It doesn't need a build step.

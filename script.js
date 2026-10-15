@@ -193,7 +193,7 @@ document.addEventListener("click", async e => {
 $("#year").textContent = new Date().getFullYear();
 
 // "Share" opens the phone's share sheet (Messages, Instagram DMs…), or copies the link
-const SITE_URL = "https://seb-stek.github.io/mindset-in-motion/";
+const SITE_URL = "https://mindsetinmotionkids.org/";
 document.addEventListener("click", async e => {
   if (!e.target.closest(".share-btn")) return;
   const data = { title: "Mindset in Motion", text: "Free sports clinics for kids ages 8 to 12. Play better, live better.", url: SITE_URL };
